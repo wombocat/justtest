@@ -714,7 +714,7 @@ local function EnsurePlaceholder(Height: number): Frame
 
 	local Placeholder = Add("Frame", {
 		Name = "SectionPlaceholder";
-		BackgroundColor3 = RGB(122, 36, 36);
+		BackgroundColor3 = RGB(90, 10, 26);
 		BackgroundTransparency = 0.65;
 		BorderSizePixel = 0;
 		Size = UD2(1, 0, 0, Height);
@@ -724,7 +724,7 @@ local function EnsurePlaceholder(Height: number): Frame
 	Add("UIStroke", {
 		Parent = Placeholder;
 		ApplyStrokeMode = ASM.Border;
-		Color = RGB(220, 76, 76);
+		Color = RGB(196, 24, 60);
 		Thickness = 1.5;
 		Transparency = 0.2;
 	})
@@ -1031,7 +1031,7 @@ local function PageContent(Entry: {}, Container: Frame, Registry: {}, OnOpen: ((
 			BorderColor3 = RGB(0, 0, 0);
 			BorderSizePixel = 0;
 			ScrollBarThickness = 0;
-			ScrollBarImageColor3 = RGB(122, 36, 36);
+			ScrollBarImageColor3 = RGB(90, 10, 26);
 			ScrollBarImageTransparency = 1;
 			ScrollingDirection = SBD.Y;
 			CanvasSize = UD2(0, 0, 0, 0);
@@ -1231,7 +1231,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 			Tween(Button, {
 				BackgroundTransparency = Selected and 0 or 1;
 				TextTransparency = Selected and 0.15 or 0.45;
-				BackgroundColor3 = Selected and RGB(48, 28, 30) or RGB(20, 20, 21);
+				BackgroundColor3 = Selected and RGB(46, 20, 26) or RGB(20, 20, 21);
 			}, 0.1)
 		end
 	end
@@ -1319,7 +1319,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 				local Selected = IsSelected(Option)
 				Tween(Button, {
 					BackgroundTransparency = Selected and 0 or 1;
-					BackgroundColor3 = Selected and RGB(48, 28, 30) or RGB(20, 20, 21);
+					BackgroundColor3 = Selected and RGB(46, 20, 26) or RGB(20, 20, 21);
 				}, 0.08)
 			end)
 			Button.Activated:Connect(function()
@@ -1735,8 +1735,8 @@ Library.SubElements.Keybind = function(self: Library, propertyTable: {})
 	local HoldLabel = Add("TextLabel", { Parent = HoldButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = "Hold"; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextLabel
 	Add("UIPadding", { Parent = HoldButton; PaddingLeft = UD(0, 14); PaddingRight = UD(0, 14); })
 	Add("UICorner", { Parent = HoldButton; CornerRadius = UD(0, 5); })
-	local HoldGradient = Add("UIGradient", { Parent = HoldButton; Color = CS{ CSK(0, RGB(122, 36, 36)), CSK(1, RGB(220, 76, 76)) }; Rotation = -90; }) :: UIGradient
-	local ToggleGradient = Add("UIGradient", { Parent = ToggleButton; Color = CS{ CSK(0, RGB(122, 36, 36)), CSK(1, RGB(220, 76, 76)) }; Enabled = false; Rotation = -90; }) :: UIGradient
+	local HoldGradient = Add("UIGradient", { Parent = HoldButton; Color = CS{ CSK(0, RGB(90, 10, 26)), CSK(1, RGB(196, 24, 60)) }; Rotation = -90; }) :: UIGradient
+	local ToggleGradient = Add("UIGradient", { Parent = ToggleButton; Color = CS{ CSK(0, RGB(90, 10, 26)), CSK(1, RGB(196, 24, 60)) }; Enabled = false; Rotation = -90; }) :: UIGradient
 	local ToggleLabel = Add("TextLabel", { Parent = ToggleButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = "Toggle"; TextColor3 = RGB(255, 255, 255); TextSize = 14; TextTransparency = 0.5; }) :: TextLabel
 	Add("UIPadding", { Parent = ToggleButton; PaddingLeft = UD(0, 14); PaddingRight = UD(0, 14); })
 	Add("UICorner", { Parent = ToggleButton; CornerRadius = UD(0, 5); })
@@ -2161,7 +2161,7 @@ Library.Window = function(self: Library, propertyTable: {})
 		Size = UFO(8, 8);
 		Position = UD2(0, 1, 0.5, 0);
 		AnchorPoint = V2(0, 0.5);
-		BackgroundColor3 = RGB(150, 142, 142);
+		BackgroundColor3 = RGB(154, 140, 146);
 		BorderSizePixel = 0;
 		ZIndex = 6;
 	})
@@ -2179,7 +2179,7 @@ Library.Window = function(self: Library, propertyTable: {})
 		Tween(EditKnob, {
 			Position = On and UD2(1, -1, 0.5, 0) or UD2(0, 1, 0.5, 0);
 			AnchorPoint = On and V2(1, 0.5) or V2(0, 0.5);
-			BackgroundColor3 = On and Library.Theme.Accent or RGB(190, 180, 180);
+			BackgroundColor3 = On and Library.Theme.Accent or RGB(198, 178, 184);
 		}, 0.12)
 		Tween(EditTrack, {
 			BackgroundColor3 = On and Library.Theme.AccentDark or Library.Theme.SurfaceAlt;
@@ -2631,27 +2631,27 @@ Library.Window = function(self: Library, propertyTable: {})
 end
 
 Library.Theme = {
-	Accent = RGB(220, 76, 76),
-	AccentDark = RGB(122, 36, 36),
+	Accent = RGB(196, 24, 60),
+	AccentDark = RGB(90, 10, 26),
 	Background = RGB(9, 8, 8),
 	Surface = RGB(15, 14, 15),
 	SurfaceAlt = RGB(20, 20, 21),
 	Border = RGB(36, 37, 37),
 	SectionBorder = RGB(32, 33, 36),
 	Text = RGB(255, 255, 255),
-	TextDim = RGB(190, 180, 180),
+	TextDim = RGB(198, 178, 184),
 }
 
 Library.DefaultTheme = {
-	Accent = RGB(220, 76, 76),
-	AccentDark = RGB(122, 36, 36),
+	Accent = RGB(196, 24, 60),
+	AccentDark = RGB(90, 10, 26),
 	Background = RGB(9, 8, 8),
 	Surface = RGB(15, 14, 15),
 	SurfaceAlt = RGB(20, 20, 21),
 	Border = RGB(36, 37, 37),
 	SectionBorder = RGB(32, 33, 36),
 	Text = RGB(255, 255, 255),
-	TextDim = RGB(190, 180, 180),
+	TextDim = RGB(198, 178, 184),
 }
 
 Library.ThemeLinks = {}
@@ -3283,7 +3283,7 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 			Size = UFO(0, 32);
 			FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
 			Text = Text;
-			TextColor3 = Dim and RGB(162, 152, 152) or RGB(242, 236, 236);
+			TextColor3 = Dim and RGB(166, 150, 156) or RGB(244, 232, 238);
 			TextSize = 12;
 			LayoutOrder = Order;
 		})
@@ -3518,7 +3518,7 @@ Library.Notify = function(propertyTable: {})
 		Size = UFO(16, 16);
 		BackgroundTransparency = 1;
 		Text = "x";
-		TextColor3 = RGB(150, 142, 142);
+		TextColor3 = RGB(154, 140, 146);
 		TextSize = 12;
 		FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
 		AutoButtonColor = false;
@@ -3528,7 +3528,7 @@ Library.Notify = function(propertyTable: {})
 		Tween(Close, { TextColor3 = T.Text }, 0.12)
 	end)
 	Close.MouseLeave:Connect(function()
-		Tween(Close, { TextColor3 = RGB(150, 142, 142) }, 0.15)
+		Tween(Close, { TextColor3 = RGB(154, 140, 146) }, 0.15)
 	end)
 
 	if HasBody then
@@ -3539,7 +3539,7 @@ Library.Notify = function(propertyTable: {})
 			Size = UD2(1, -4, 0, 14);
 			FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
 			Text = Content;
-			TextColor3 = RGB(168, 158, 158);
+			TextColor3 = RGB(172, 154, 160);
 			TextSize = 11;
 			TextXAlignment = TXA.Left;
 			TextTruncate = ETT.AtEnd;
@@ -3686,7 +3686,7 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 	local function PaintRows()
 		for Name, Row in ListRows do
 			local On = Selected.Name == Name
-			Row.TextColor3 = On and Library.Theme.Accent or RGB(214, 202, 202)
+			Row.TextColor3 = On and Library.Theme.Accent or RGB(216, 198, 204)
 			Row.BackgroundTransparency = On and 0.85 or 1
 			Row.BackgroundColor3 = Library.Theme.Accent
 		end
@@ -3713,7 +3713,7 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 				Size = UD2(1, 0, 0, 28);
 				FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
 				Text = "No configs yet";
-				TextColor3 = RGB(132, 122, 122);
+				TextColor3 = RGB(138, 120, 126);
 				TextSize = 12;
 			})
 			ListRows["__empty"] = Empty :: any
@@ -3728,7 +3728,7 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 					Size = UD2(1, 0, 0, 26);
 					FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
 					Text = "  " .. Name;
-					TextColor3 = RGB(214, 202, 202);
+					TextColor3 = RGB(216, 198, 204);
 					TextSize = 13;
 					TextXAlignment = TXA.Left;
 					LayoutOrder = i;
