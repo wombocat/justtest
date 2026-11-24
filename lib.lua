@@ -2094,7 +2094,7 @@ end
 Library.Window = function(self: Library, propertyTable: {})
 	local Window = Overwrite({
 		Title = "",
-		Subtitle = "Modus vivendi.";
+		Subtitle = "";
 		ShowTitleBar = true;
 		Footer = "",
 		Logo = nil,
@@ -2118,10 +2118,13 @@ Library.Window = function(self: Library, propertyTable: {})
 		Pent.Position = UD2(0, 0, 0.5, 0)
 		Pent.ZIndex = 6
 
-		local BrandName = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 0); Size = UD2(1, -34, 0, 16); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = 14; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+		local HasSub = type(Window.Subtitle) == "string" and Window.Subtitle ~= ""
+		local BrandName = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 0); Size = HasSub and UD2(1, -34, 0, 16) or UD2(1, -34, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = HasSub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
 		Library.ThemeLink(BrandName, "TextColor3", "Text")
-		local BrandSub = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 16); Size = UD2(1, -34, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
-		Library.ThemeLink(BrandSub, "TextColor3", "TextDim")
+		if HasSub then
+			local BrandSub = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 16); Size = UD2(1, -34, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+			Library.ThemeLink(BrandSub, "TextColor3", "TextDim")
+		end
 
 		Add("Frame", { Parent = TitleBar; Name = "BrandDivider"; BackgroundColor3 = RGB(36, 37, 37); BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 134, 0.5, 0); Size = UFO(1, 16); ZIndex = 5; })
 
