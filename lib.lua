@@ -2046,51 +2046,6 @@ end
 
 Library._Instance = Add("ScreenGui", { Parent = RunService:IsStudio() and Client.PlayerGui or Services:GetService("CoreGui"); Name = "Window"; ZIndexBehavior = ZIB.Sibling; }) :: ScreenGui
 
--- Vector pentagram (inverted star inside a circle) built from rotated frames
-local function MakePentagram(Parent: Instance, Diameter: number, Color: Color3, Thickness: number?): Frame
-	local T = Thickness or 1.4
-	local Holder = Add("Frame", {
-		Parent = Parent;
-		Name = "Pentagram";
-		BackgroundTransparency = 1;
-		BorderColor3 = RGB(0, 0, 0);
-		BorderSizePixel = 0;
-		Size = UFO(Diameter, Diameter);
-	}) :: Frame
-
-	local Ring = Add("Frame", { Parent = Holder; BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 1); }) :: Frame
-	Add("UICorner", { Parent = Ring; CornerRadius = UD(0.5, 0); })
-	local RingStroke = Add("UIStroke", { Parent = Ring; ApplyStrokeMode = ASM.Border; Color = Color; Thickness = T; })
-	if Library.ThemeLink then
-		Library.ThemeLink(RingStroke, "Color", "Accent")
-	end
-
-	local Radius = Diameter / 2
-	local Center = V2(Radius, Radius)
-	for Index = 0, 4 do
-		local A0 = math.rad(-90 + Index * 72)
-		local A1 = math.rad(-90 + (Index + 2) * 72)
-		local P0 = Center + V2(math.cos(A0), math.sin(A0)) * Radius
-		local P1 = Center + V2(math.cos(A1), math.sin(A1)) * Radius
-		local Mid = (P0 + P1) * 0.5
-		local Bar = Add("Frame", {
-			Parent = Holder;
-			BackgroundColor3 = Color;
-			BorderColor3 = RGB(0, 0, 0);
-			BorderSizePixel = 0;
-			AnchorPoint = V2(0.5, 0.5);
-			Position = UFO(Mid.X, Mid.Y);
-			Size = UFO((P1 - P0).Magnitude, T);
-			Rotation = math.deg(math.atan2(P1.Y - P0.Y, P1.X - P0.X));
-		}) :: Frame
-		if Library.ThemeLink then
-			Library.ThemeLink(Bar, "BackgroundColor3", "Accent")
-		end
-	end
-
-	return Holder
-end
-
 Library.Window = function(self: Library, propertyTable: {})
 	local Window = Overwrite({
 		Title = "",
@@ -2113,10 +2068,21 @@ Library.Window = function(self: Library, propertyTable: {})
 		Add("UIStroke", { Parent = TitleBar; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 
 		local Brand = Add("Frame", { Parent = TitleBar; Name = "Brand"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 12, 0.5, 0); Size = UFO(112, 28); ZIndex = 5; }) :: Frame
-		local Pent = MakePentagram(Brand, 24, Library.Theme.Accent, 1.4)
-		Pent.AnchorPoint = V2(0, 0.5)
-		Pent.Position = UD2(0, 0, 0.5, 0)
-		Pent.ZIndex = 6
+		local Pent = Add("ImageLabel", {
+			Parent = Brand;
+			Name = "Logo";
+			AnchorPoint = V2(0, 0.5);
+			Position = UD2(0, 0, 0.5, 0);
+			Size = UFO(24, 24);
+			BackgroundTransparency = 1;
+			BorderColor3 = RGB(0, 0, 0);
+			BorderSizePixel = 0;
+			Image = "rbxassetid://12976237986";
+			ImageColor3 = Library.Theme.Accent;
+			ScaleType = SCL.Fit;
+			ZIndex = 6;
+		}) :: ImageLabel
+		Library.ThemeLink(Pent, "ImageColor3", "Accent")
 
 		local HasSub = type(Window.Subtitle) == "string" and Window.Subtitle ~= ""
 		local BrandName = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 0); Size = HasSub and UD2(1, -34, 0, 16) or UD2(1, -34, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = HasSub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
