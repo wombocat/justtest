@@ -2046,17 +2046,148 @@ end
 
 Library._Instance = Add("ScreenGui", { Parent = RunService:IsStudio() and Client.PlayerGui or Services:GetService("CoreGui"); Name = "Window"; ZIndexBehavior = ZIB.Sibling; }) :: ScreenGui
 
+-- Vector pentagram (inverted star inside a circle) built from rotated frames
+local function MakePentagram(Parent: Instance, Diameter: number, Color: Color3, Thickness: number?): Frame
+	local T = Thickness or 1.4
+	local Holder = Add("Frame", {
+		Parent = Parent;
+		Name = "Pentagram";
+		BackgroundTransparency = 1;
+		BorderColor3 = RGB(0, 0, 0);
+		BorderSizePixel = 0;
+		Size = UFO(Diameter, Diameter);
+	}) :: Frame
+
+	local Ring = Add("Frame", { Parent = Holder; BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 1); }) :: Frame
+	Add("UICorner", { Parent = Ring; CornerRadius = UD(0.5, 0); })
+	local RingStroke = Add("UIStroke", { Parent = Ring; ApplyStrokeMode = ASM.Border; Color = Color; Thickness = T; })
+	if Library.ThemeLink then
+		Library.ThemeLink(RingStroke, "Color", "Accent")
+	end
+
+	local Radius = Diameter / 2
+	local Center = V2(Radius, Radius)
+	for Index = 0, 4 do
+		local A0 = math.rad(-90 + Index * 72)
+		local A1 = math.rad(-90 + (Index + 2) * 72)
+		local P0 = Center + V2(math.cos(A0), math.sin(A0)) * Radius
+		local P1 = Center + V2(math.cos(A1), math.sin(A1)) * Radius
+		local Mid = (P0 + P1) * 0.5
+		local Bar = Add("Frame", {
+			Parent = Holder;
+			BackgroundColor3 = Color;
+			BorderColor3 = RGB(0, 0, 0);
+			BorderSizePixel = 0;
+			AnchorPoint = V2(0.5, 0.5);
+			Position = UFO(Mid.X, Mid.Y);
+			Size = UFO((P1 - P0).Magnitude, T);
+			Rotation = math.deg(math.atan2(P1.Y - P0.Y, P1.X - P0.X));
+		}) :: Frame
+		if Library.ThemeLink then
+			Library.ThemeLink(Bar, "BackgroundColor3", "Accent")
+		end
+	end
+
+	return Holder
+end
+
 Library.Window = function(self: Library, propertyTable: {})
 	local Window = Overwrite({
 		Title = "",
+		Subtitle = "Modus vivendi.";
+		ShowTitleBar = true;
 		Footer = "",
 		Logo = nil,
 		Icon = nil,
 	}, propertyTable or {})
 
-	local Canvas = Add("Frame", { Parent = self._Instance; Name = "Canvas"; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFO(658, 461); }) :: Frame
+	local TitleH = Window.ShowTitleBar and 40 or 0
+	local Canvas = Add("Frame", { Parent = self._Instance; Name = "Canvas"; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFO(658, 461 + TitleH); }) :: Frame
 	Library.ThemeLink(Canvas, "BackgroundColor3", "Background")
-	local Sidebar = Add("Frame", { Parent = Canvas; Name = "Sidebar"; BackgroundColor3 = Library.Theme.Surface; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(0, 75, 1, 0); }) :: Frame
+
+	-- App-style title bar: pentagram mark, brand, subtitle, window controls
+	if TitleH > 0 then
+		local TitleBar = Add("Frame", { Parent = Canvas; Name = "TitleBar"; BackgroundColor3 = Library.Theme.Surface; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(1, 0, 0, TitleH); ZIndex = 4; }) :: Frame
+		Library.ThemeLink(TitleBar, "BackgroundColor3", "Surface")
+		Add("UICorner", { Parent = TitleBar; BottomLeftRadius = UD(0, 0); BottomRightRadius = UD(0, 0); TopLeftRadius = UD(0, 5); TopRightRadius = UD(0, 5); })
+		Add("UIStroke", { Parent = TitleBar; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
+
+		local Brand = Add("Frame", { Parent = TitleBar; Name = "Brand"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 12, 0.5, 0); Size = UFO(112, 28); ZIndex = 5; }) :: Frame
+		local Pent = MakePentagram(Brand, 24, Library.Theme.Accent, 1.4)
+		Pent.AnchorPoint = V2(0, 0.5)
+		Pent.Position = UD2(0, 0, 0.5, 0)
+		Pent.ZIndex = 6
+
+		local BrandName = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 0); Size = UD2(1, -34, 0, 16); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = 14; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+		Library.ThemeLink(BrandName, "TextColor3", "Text")
+		local BrandSub = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 16); Size = UD2(1, -34, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+		Library.ThemeLink(BrandSub, "TextColor3", "TextDim")
+
+		Add("Frame", { Parent = TitleBar; Name = "BrandDivider"; BackgroundColor3 = RGB(36, 37, 37); BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 134, 0.5, 0); Size = UFO(1, 16); ZIndex = 5; })
+
+		local Controls = Add("Frame", { Parent = TitleBar; Name = "Controls"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(1, 0.5); Position = UD2(1, -10, 0.5, 0); Size = UFO(80, 24); ZIndex = 5; }) :: Frame
+		local IconColor = RGB(255, 255, 255)
+		local function MakeCtrl(Index: number): TextButton
+			local Btn = Add("TextButton", { Parent = Controls; Name = "Ctrl" .. tostring(Index); BackgroundColor3 = Library.Theme.Accent; BackgroundTransparency = 1; BorderSizePixel = 0; AutoButtonColor = false; Size = UFO(24, 24); Position = UFO(Index * 28, 0); Text = ""; ZIndex = 6; }) :: TextButton
+			Add("UICorner", { Parent = Btn; CornerRadius = UD(0, 4); })
+			Btn.MouseEnter:Connect(function()
+				Tween(Btn, { BackgroundTransparency = 0.86 }, 0.12)
+			end)
+			Btn.MouseLeave:Connect(function()
+				Tween(Btn, { BackgroundTransparency = 1 }, 0.12)
+			end)
+			return Btn
+		end
+
+		local Minimize = MakeCtrl(0)
+		Add("Frame", { Parent = Minimize; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 1); BackgroundColor3 = IconColor; BackgroundTransparency = 0.25; BorderSizePixel = 0; ZIndex = 7; })
+
+		local Maximize = MakeCtrl(1)
+		local MaxBox = Add("Frame", { Parent = Maximize; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 8); BackgroundTransparency = 1; BorderSizePixel = 0; ZIndex = 7; }) :: Frame
+		Add("UIStroke", { Parent = MaxBox; ApplyStrokeMode = ASM.Border; Color = IconColor; Thickness = 1; Transparency = 0.25; })
+
+		local CloseBtn = MakeCtrl(2)
+		for _, Rot in ipairs({ 45, -45 }) do
+			Add("Frame", { Parent = CloseBtn; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 1); Rotation = Rot; BackgroundColor3 = IconColor; BackgroundTransparency = 0.25; BorderSizePixel = 0; ZIndex = 7; })
+		end
+
+		local NormalSize = UFO(658, 461 + TitleH)
+		local function FitCanvas(Size: UDim2)
+			local Cam = workspace.CurrentCamera
+			local Viewport = Cam and Cam.ViewportSize or V2(1280, 720)
+			local Inset = Services:GetService("GuiService"):GetGuiInset()
+			local X = math.floor((Viewport.X - Size.X.Offset) * 0.5)
+			local Y = math.floor((Viewport.Y - Inset.Y - Size.Y.Offset) * 0.5)
+			Canvas.Position = ClampToScreen(Canvas, UFO(math.max(4, X), math.max(4, Y)))
+		end
+
+		Minimize.Activated:Connect(function()
+			Library.ToggleMenu(false)
+		end)
+
+		Maximize.Activated:Connect(function()
+			Window.Maximized = not Window.Maximized
+			if Window.Maximized then
+				local Cam = workspace.CurrentCamera
+				local Viewport = Cam and Cam.ViewportSize or V2(1280, 720)
+				local Inset = Services:GetService("GuiService"):GetGuiInset()
+				local Big = UFO(math.max(658, math.floor(Viewport.X - 80)), math.max(461 + TitleH, math.floor(Viewport.Y - Inset.Y - 80)))
+				Tween(Canvas, { Size = Big }, 0.18)
+				FitCanvas(Big)
+			else
+				Tween(Canvas, { Size = NormalSize }, 0.18)
+				FitCanvas(NormalSize)
+			end
+		end)
+
+		CloseBtn.Activated:Connect(function()
+			Library.Unload()
+		end)
+
+		BindDrag(Canvas, TitleBar, true, Controls)
+	end
+
+	local Sidebar = Add("Frame", { Parent = Canvas; Name = "Sidebar"; BackgroundColor3 = Library.Theme.Surface; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, TitleH); Size = UD2(0, 75, 1, -TitleH); }) :: Frame
 	Library.ThemeLink(Sidebar, "BackgroundColor3", "Surface")
 
 	-- Author logo (only if Logo / Icon provided — no default hashtag)
@@ -2207,19 +2338,19 @@ Library.Window = function(self: Library, propertyTable: {})
 		PageButtons.Size = UD2(1, 0, 1, -H - 28)
 	end
 
-	local Header = Add("Frame", { Parent = Canvas; Name = "Header"; BackgroundColor3 = Library.Theme.SurfaceAlt; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(75, 0); Size = UD2(1, -75, 0, 50); }) :: Frame
+	local Header = Add("Frame", { Parent = Canvas; Name = "Header"; BackgroundColor3 = Library.Theme.SurfaceAlt; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(75, TitleH); Size = UD2(1, -75, 0, 50); }) :: Frame
 	Library.ThemeLink(Header, "BackgroundColor3", "SurfaceAlt")
 	local SubPages = Add("Frame", { Parent = Header; Name = "SubPages"; AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(0, 1); }) :: Frame
 	local Search = Add("Frame", { Parent = Header; Name = "Search"; LayoutOrder = 1; Active = true; AnchorPoint = V2(1, 0); AutomaticSize = AS.X; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(1, 0); Selectable = true; Size = UD2(0, 200, 1, 0); }) :: Frame
-	local Pages = Add("Frame", { Parent = Canvas; Name = "Pages"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(75, 50); Size = UD2(1, -75, 1, -75); }) :: Frame
+	local Pages = Add("Frame", { Parent = Canvas; Name = "Pages"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(75, TitleH + 50); Size = UD2(1, -75, 1, -(TitleH + 75)); }) :: Frame
 	local Footer = Add("Frame", { Parent = Canvas; Name = "Footer"; AnchorPoint = V2(0, 1); BackgroundColor3 = Library.Theme.Surface; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UD2(0, 75, 1, 0); Size = UD2(1, -75, 0, 25); }) :: Frame
 	Library.ThemeLink(Footer, "BackgroundColor3", "Surface")
 	local SearchBox = Add("TextBox", { Parent = Search; Name = "TextLabel"; Active = false; AutomaticSize = AS.X; ClearTextOnFocus = false; LayoutOrder = 1; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); PlaceholderColor3 = RGB(255, 255, 255); PlaceholderText = "Search function"; Selectable = false; Size = UFS(0, 1); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 14; TextTransparency = 0.5; }) :: TextBox
 	Add("UIStroke", { Parent = Canvas; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UICorner", { Parent = Canvas; CornerRadius = UD(0, 5); })
-	Add("UICorner", { Parent = Sidebar; BottomLeftRadius = UD(0, 5); BottomRightRadius = UD(0, 0); TopLeftRadius = UD(0, 5); TopRightRadius = UD(0, 0); })
+	Add("UICorner", { Parent = Sidebar; BottomLeftRadius = UD(0, 5); BottomRightRadius = UD(0, 0); TopLeftRadius = UD(0, TitleH > 0 and 0 or 5); TopRightRadius = UD(0, 0); })
 	Add("UIStroke", { Parent = Sidebar; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
-		Add("UICorner", { Parent = Header; BottomLeftRadius = UD(0, 0); BottomRightRadius = UD(0, 0); TopLeftRadius = UD(0, 0); TopRightRadius = UD(0, 5); })
+		Add("UICorner", { Parent = Header; BottomLeftRadius = UD(0, 0); BottomRightRadius = UD(0, 0); TopLeftRadius = UD(0, 0); TopRightRadius = UD(0, TitleH > 0 and 0 or 5); })
 	Add("UIStroke", { Parent = Header; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UIListLayout", { Parent = SubPages; FillDirection = FD.Horizontal; Padding = UD(0, 10); SortOrder = SO.LayoutOrder; VerticalAlignment = VFA.Center; })
 	Add("UIPadding", { Parent = Header; PaddingBottom = UD(0, 10); PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); PaddingTop = UD(0, 10); })
@@ -2247,7 +2378,7 @@ Library.Window = function(self: Library, propertyTable: {})
 			return
 		end
 		local Viewport = Camera.ViewportSize
-		local W, H = 658, 461
+		local W, H = Canvas.Size.X.Offset, Canvas.Size.Y.Offset
 		local Scale = Library.UIScale or 1
 		local GuiService = Services:GetService("GuiService")
 		local Inset = GuiService:GetGuiInset()
