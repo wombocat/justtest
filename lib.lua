@@ -2092,8 +2092,6 @@ Library.Window = function(self: Library, propertyTable: {})
 			Library.ThemeLink(BrandSub, "TextColor3", "TextDim")
 		end
 
-		Add("Frame", { Parent = TitleBar; Name = "BrandDivider"; BackgroundColor3 = RGB(36, 37, 37); BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 134, 0.5, 0); Size = UFO(1, 16); ZIndex = 5; })
-
 		local Controls = Add("Frame", { Parent = TitleBar; Name = "Controls"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(1, 0.5); Position = UD2(1, -10, 0.5, 0); Size = UFO(80, 24); ZIndex = 5; }) :: Frame
 		local IconColor = RGB(255, 255, 255)
 		local function MakeCtrl(Index: number): TextButton
@@ -2332,7 +2330,7 @@ Library.Window = function(self: Library, propertyTable: {})
 	Add("UIShadow", { Parent = Canvas; BlurRadius = UD(0, 20); Spread = UFO(5, 5); Transparency = 0.65; })
 	Add("UICorner", { Parent = Footer; BottomLeftRadius = UD(0, 0); BottomRightRadius = UD(0, 5); TopLeftRadius = UD(0, 0); TopRightRadius = UD(0, 0); })
 	Add("UIStroke", { Parent = Footer; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
-	Add("UIPadding", { Parent = Footer; PaddingBottom = UD(0, 10); PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); PaddingTop = UD(0, 10); })
+	Add("UIPadding", { Parent = Footer; PaddingBottom = UD(0, 0); PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); PaddingTop = UD(0, 0); })
 	Add("TextLabel", { Parent = Footer; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UFS(0, 0.5); Size = UFO(0, 13); Text = Window.Title; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.5; })
 	Add("TextLabel", { Parent = Footer; AnchorPoint = V2(1, 0.5); AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UFS(1, 0.5); Size = UFO(0, 13); Text = Window.Footer; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.5; })
 	BindDrag(Canvas, Header, true, Search)
@@ -2898,8 +2896,12 @@ Library.ApplyTheme = function()
 		local Stroke = Library.Watermark.Frame:FindFirstChildOfClass("UIStroke")
 		if Stroke then Stroke.Color = T.Border end
 		if Library.Watermark.Accent then
-			Library.Watermark.Accent.BackgroundColor3 = T.Accent
-			PaintGrad(Library.Watermark.Accent:FindFirstChildOfClass("UIGradient"))
+			if Library.Watermark.Accent:IsA("ImageLabel") then
+				Library.Watermark.Accent.ImageColor3 = T.Accent
+			else
+				Library.Watermark.Accent.BackgroundColor3 = T.Accent
+				PaintGrad(Library.Watermark.Accent:FindFirstChildOfClass("UIGradient"))
+			end
 		end
 		if Library.Watermark.Label then
 			Library.Watermark.Label.TextColor3 = T.Text
@@ -3361,18 +3363,16 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 		SortOrder = SO.LayoutOrder;
 	})
 
-	local Logo = Add("Frame", {
+	local Logo = Add("ImageLabel", {
 		Parent = Frame;
-		BackgroundColor3 = Library.Theme.Accent;
+		Name = "Logo";
+		BackgroundTransparency = 1;
 		BorderSizePixel = 0;
+		Image = "rbxassetid://12976237986";
+		ImageColor3 = Library.Theme.Accent;
+		ScaleType = SCL.Fit;
 		Size = UFO(16, 16);
 		LayoutOrder = 0;
-	})
-	Add("UICorner", { Parent = Logo; CornerRadius = UD(0, 4); })
-	Add("UIGradient", {
-		Parent = Logo;
-		Color = CS{ CSK(0, Library.Theme.AccentDark), CSK(1, Library.Theme.Accent) };
-		Rotation = -45;
 	})
 
 	local function Chip(Text: string, Order: number, Dim: boolean?): TextLabel
