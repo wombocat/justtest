@@ -3388,11 +3388,10 @@ UserInputService.InputBegan:Connect(function(Input: InputObject)
 	if not F or not F.Parent or not F.Visible then
 		return
 	end
-	local Inset = Services:GetService("GuiService"):GetGuiInset()
-	local A = F.AbsolutePosition + V2(Inset.X, Inset.Y)
+	local A = F.AbsolutePosition
 	local S = F.AbsoluteSize
 	local P = Input.Position
-	if P.X >= A.X and P.X <= A.X + S.X and P.Y >= A.Y and P.Y <= A.Y + S.Y then
+	if P.X >= A.X - 4 and P.X <= A.X + S.X + 4 and P.Y >= A.Y - 4 and P.Y <= A.Y + S.Y + 4 then
 		Library.ToggleMenu()
 	end
 end)
