@@ -1035,6 +1035,18 @@ Library.Elements.Label = function(self: Library, propertyTable: {})
 	Label.RightContent = RightContent
 	Label.LeftContent = LeftContent
 
+	LabelFrame.InputBegan:Connect(function(Input)
+		if Input.UserInputType ~= UIT.MouseButton2 then
+			return
+		end
+
+		if Label.Keybind then
+			Label.Keybind.Open(true)
+		elseif Label.Colorpicker then
+			Label.Colorpicker.Toggle(true)
+		end
+	end)
+
 	TIS(Library.Searchable, { Frame = LabelFrame; Text = Label.Text; Section = self })
 	return Label
 end
@@ -1549,6 +1561,7 @@ Library.SubElements.Keybind = function(self: Library, propertyTable: {})
 
 	local Settings = Add("ImageButton", { Parent = self.RightContent; Name = "Settings"; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://132030186847627"; ImageTransparency = 0.5; ResampleMode = Enum.ResamplerMode.Pixelated; Size = UFO(15, 15); }) :: ImageButton
 	Keybind.Settings = Settings
+	self.Keybind = Keybind
 
 	local Popup = Add("Frame", { Parent = Library._Instance; Name = "Popup"; Active = true; BackgroundColor3 = RGB(9, 8, 8); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(0.3753760755062103, 0.30920326709747314); Size = UFO(180, 119); Visible = false; ZIndex = PopupZ; }) :: Frame
 	Track(Popup)
@@ -1751,6 +1764,7 @@ Library.SubElements.Colorpicker = function(self: Library, propertyTable: {})
 	Add("UIGradient", { Parent = Button; Color = CS{ CSK(0, RGB(163, 163, 163)), CSK(1, RGB(255, 255, 255)) }; Rotation = -90; })
 
 	Colorpicker.Button = Button
+	self.Colorpicker = Colorpicker
 
 	local ColorpickerFrame = Add("Frame", { Parent = Library._Instance; Name = "ColorpickerFrame"; Active = true; AutomaticSize = AS.Y; BackgroundColor3 = RGB(9, 8, 8); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(0.3759043514728546, 0.058557264506816864); Size = UFO(199, 0); Visible = false; ZIndex = PopupZ; }) :: Frame
 	Track(ColorpickerFrame)
@@ -2875,9 +2889,6 @@ Library.LoadConfig = function(Name: string)
 	if Library.ApplyTheme then
 		Library.ApplyTheme()
 	end
-	if Library.SyncThemePickers then
-		Library.SyncThemePickers()
-	end
 	return true
 end
 
@@ -3377,13 +3388,10 @@ end)
 Library.BuildConfigPage = function(self: Library, Window: any)
 	local Page = Window:Page({ Icon = "save" })
 	local Manager = Page:SubPage({ Name = "Configs" })
-	local ThemePage = Page:SubPage({ Name = "Theme" })
 	local MenuPage = Page:SubPage({ Name = "Menu" })
 
 	local ListSection = Manager:Section({ Name = "Configs"; Side = "Left"; Icon = "folder" })
 	local ActionsSection = Manager:Section({ Name = "Actions"; Side = "Right"; Icon = "settings" })
-	local ThemeSection = ThemePage:Section({ Name = "Colors"; Side = "Left"; Icon = "palette" })
-	local ThemePrev = ThemePage:Section({ Name = "Preview"; Side = "Right"; Icon = "eye" })
 	local MenuSection = MenuPage:Section({ Name = "Menu"; Side = "Left"; Icon = "settings" })
 	local NotifySection = MenuPage:Section({ Name = "Notifications"; Side = "Right"; Icon = "bell" })
 
@@ -3486,9 +3494,6 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 			end
 			if Library.LoadConfig(Name) then
 				Library.ApplyTheme()
-				if Library.SyncThemePickers then
-					Library.SyncThemePickers()
-				end
 				SelectConfig(Name)
 				Library.Notify({ Title = "Config"; Content = "Loaded " .. Name; Type = "Success" })
 			else
@@ -3533,60 +3538,6 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 	})
 
 	RebuildList()
-
-	local ThemePickers = {}
-
-	local function ThemePicker(LabelText: string, Key: string)
-		local Row = ThemeSection:Label({ Text = LabelText })
-		local Picker = Row:Colorpicker({
-			Color = Library.Theme[Key];
-			Flag = "Theme" .. Key;
-			Callback = function(Color)
-				Library.Theme[Key] = Color
-				if Key == "Accent" then
-					local H, S, V = Color:ToHSV()
-					Library.Theme.AccentDark = HSV(H, S, math.max(V * 0.55, 0.15))
-				end
-				Library.ApplyTheme()
-			end;
-		})
-		ThemePickers[Key] = Picker
-	end
-
-	ThemePicker("Accent", "Accent")
-	ThemePicker("Background", "Background")
-	ThemePicker("Surface", "Surface")
-	ThemePicker("Surface alt", "SurfaceAlt")
-	ThemePicker("Border", "Border")
-	ThemePicker("Section border", "SectionBorder")
-	ThemePicker("Text", "Text")
-
-	Library.SyncThemePickers = function()
-		for Key, Picker in pairs(ThemePickers) do
-			local Color = Library.Theme[Key]
-			if Color and Picker and Picker.Set then
-				Picker.Set(Color, 0)
-			end
-		end
-	end
-
-	ThemePrev:Paragraph({
-		Title = "Live theme";
-		Body = "Changes apply immediately to the menu and watermark.";
-	})
-	ThemePrev:Button({
-		Name = "Reset theme";
-		Callback = function()
-			for Key, Color in pairs(Library.DefaultTheme) do
-				Library.Theme[Key] = Color
-			end
-			Library.ApplyTheme()
-			if Library.SyncThemePickers then
-				Library.SyncThemePickers()
-			end
-			Library.Notify({ Title = "Theme"; Content = "Reset to default"; Type = "Info" })
-		end;
-	})
 
 	local MenuKeyLabel = MenuSection:Label({ Text = "Menu key" })
 	MenuKeyLabel:Keybind({
@@ -3664,9 +3615,6 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 	if Autoload then
 		Library.LoadConfig(Autoload)
 		Library.ApplyTheme()
-		if Library.SyncThemePickers then
-			Library.SyncThemePickers()
-		end
 		SelectConfig(Autoload)
 	end
 
