@@ -1040,10 +1040,10 @@ Library.Elements.Label = function(self: Library, propertyTable: {})
 			return
 		end
 
-		if Label.Keybind then
-			Label.Keybind.Open(true)
-		elseif Label.Colorpicker then
-			Label.Colorpicker.Toggle(true)
+		if Label._Keybind then
+			Label._Keybind.Open(true)
+		elseif Label._Colorpicker then
+			Label._Colorpicker.Toggle(true)
 		end
 	end)
 
@@ -1561,7 +1561,7 @@ Library.SubElements.Keybind = function(self: Library, propertyTable: {})
 
 	local Settings = Add("ImageButton", { Parent = self.RightContent; Name = "Settings"; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://132030186847627"; ImageTransparency = 0.5; ResampleMode = Enum.ResamplerMode.Pixelated; Size = UFO(15, 15); }) :: ImageButton
 	Keybind.Settings = Settings
-	self.Keybind = Keybind
+	self._Keybind = Keybind
 
 	local Popup = Add("Frame", { Parent = Library._Instance; Name = "Popup"; Active = true; BackgroundColor3 = RGB(9, 8, 8); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(0.3753760755062103, 0.30920326709747314); Size = UFO(180, 119); Visible = false; ZIndex = PopupZ; }) :: Frame
 	Track(Popup)
@@ -1764,7 +1764,7 @@ Library.SubElements.Colorpicker = function(self: Library, propertyTable: {})
 	Add("UIGradient", { Parent = Button; Color = CS{ CSK(0, RGB(163, 163, 163)), CSK(1, RGB(255, 255, 255)) }; Rotation = -90; })
 
 	Colorpicker.Button = Button
-	self.Colorpicker = Colorpicker
+	self._Colorpicker = Colorpicker
 
 	local ColorpickerFrame = Add("Frame", { Parent = Library._Instance; Name = "ColorpickerFrame"; Active = true; AutomaticSize = AS.Y; BackgroundColor3 = RGB(9, 8, 8); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(0.3759043514728546, 0.058557264506816864); Size = UFO(199, 0); Visible = false; ZIndex = PopupZ; }) :: Frame
 	Track(ColorpickerFrame)
