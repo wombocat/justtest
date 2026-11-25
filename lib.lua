@@ -469,6 +469,13 @@ local function BindSlider(Object: GuiObject, Callback: (Alpha: Vector2) -> ())
 end
 
 local function Tween(Object: Instance, propertyTable: {}, Duration: number?, Style: Enum.EasingStyle?, Direction: Enum.EasingDirection?)
+Library._Scaled = setmetatable({}, { __mode = "k" })
+
+local function Track(Gui: GuiObject)
+	Library._Scaled[Gui] = true
+	Add("UIScale", { Parent = Gui; Scale = Library.UIScale })
+end
+
 	local Tween = TweenService:Create(Object, TI(Duration or 0.2, Style or ES.Quad, Direction or ED.Out), propertyTable)
 	Tween:Play()
 
@@ -1098,6 +1105,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 	}, propertyTable or {})
 
 	local OptionList = Add("TextButton", { Parent = Library._Instance; Name = "Options"; AutoButtonColor = false; AutomaticSize = AS.Y; BackgroundColor3 = RGB(15, 14, 15); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(0.3761225640773773, 0.42204996943473816); Size = UFO(253, 0); Text = ""; Visible = false; ZIndex = PopupZ; }) :: TextButton
+	Track(OptionList)
 	Add("UICorner", { Parent = OptionList; CornerRadius = UD(0, 5); })
 	Add("UIStroke", { Parent = OptionList; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UIPadding", { Parent = OptionList; })
@@ -1276,7 +1284,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 			Library.PlaySound("Dropdown")
 			ClaimPopup(Dropdown)
 
-			OptionList.Size = UFO(InputFrame.AbsoluteSize.X, 0)
+			OptionList.Size = UFO(InputFrame.AbsoluteSize.X / (Library.UIScale or 1), 0)
 
 			local Target = UFO(
 				InputFrame.AbsolutePosition.X,
@@ -1543,6 +1551,7 @@ Library.SubElements.Keybind = function(self: Library, propertyTable: {})
 	Keybind.Settings = Settings
 
 	local Popup = Add("Frame", { Parent = Library._Instance; Name = "Popup"; Active = true; BackgroundColor3 = RGB(9, 8, 8); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(0.3753760755062103, 0.30920326709747314); Size = UFO(180, 119); Visible = false; ZIndex = PopupZ; }) :: Frame
+	Track(Popup)
 	Keybind.Frame = Popup
 
 	Add("TextButton", { Parent = Popup; Name = "Catcher"; AutoButtonColor = false; BackgroundTransparency = 1; BorderSizePixel = 0; Size = UFS(1, 1); Text = ""; })
@@ -1744,6 +1753,7 @@ Library.SubElements.Colorpicker = function(self: Library, propertyTable: {})
 	Colorpicker.Button = Button
 
 	local ColorpickerFrame = Add("Frame", { Parent = Library._Instance; Name = "ColorpickerFrame"; Active = true; AutomaticSize = AS.Y; BackgroundColor3 = RGB(9, 8, 8); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(0.3759043514728546, 0.058557264506816864); Size = UFO(199, 0); Visible = false; ZIndex = PopupZ; }) :: Frame
+	Track(ColorpickerFrame)
 	Colorpicker.Frame = ColorpickerFrame
 
 	Add("TextButton", { Parent = ColorpickerFrame; Name = "Catcher"; AutoButtonColor = false; BackgroundTransparency = 1; BorderSizePixel = 0; Size = UFS(1, 1); Text = ""; })
@@ -2064,6 +2074,8 @@ Library.Window = function(self: Library, propertyTable: {})
 		if not Camera or not Canvas.Parent then
 			return
 		end
+		local Sc = Canvas:FindFirstChildOfClass("UIScale")
+		if Sc then Sc.Scale = Library.UIScale end
 		local Viewport = Camera.ViewportSize
 		local W, H = Canvas.Size.X.Offset, Canvas.Size.Y.Offset
 		local Scale = Library.UIScale or 1
@@ -2080,16 +2092,7 @@ Library.Window = function(self: Library, propertyTable: {})
 	Library.SetWatermark(Library.Watermark.Text, Library.Watermark.Enabled)
 	task.defer(CenterCanvas)
 
-	do
-		local Cam = workspace.CurrentCamera
-		if Cam then
-			Cam:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-				if Canvas and Canvas.Parent then
-					Canvas.Position = ClampToScreen(Canvas, Canvas.Position)
-				end
-			end)
-		end
-	end
+	Window.Recenter = CenterCanvas
 
 	Search.InputBegan:Connect(function(Input)
 		if Input.UserInputType == UIT.MouseButton1 or Input.UserInputType == UIT.Touch then
@@ -2242,14 +2245,17 @@ Library.Window = function(self: Library, propertyTable: {})
 				Add("UICorner", { Parent = Placeholder; CornerRadius = UD(0, 8); })
 
 				Ghost = Add("Frame", { Parent = Library._Instance; Name = "TabGhost"; Size = UFO(45, 45); BackgroundTransparency = 1; ZIndex = 120 })
+				Track(Ghost)
 				Add("ImageLabel", { Parent = Ghost; BackgroundTransparency = 1; Size = UFS(1, 1); Image = PageIcon.Image; ImageColor3 = Library.Theme.Accent; ImageTransparency = 0.2; ScaleType = SCL.Fit })
 				Add("UIPadding", { Parent = Ghost; PaddingBottom = UD(0, 12); PaddingLeft = UD(0, 12); PaddingRight = UD(0, 12); PaddingTop = UD(0, 12) })
 
+				local GS = Library.UIScale or 1
+				local GZ = 45 * GS
 				local function ClampGhostY(MouseY)
 					local Top = PageButtons.AbsolutePosition.Y
-					local Bot = Top + PageButtons.AbsoluteSize.Y - 45
-					local GX = PageButtons.AbsolutePosition.X + (PageButtons.AbsoluteSize.X - 45) * 0.5
-					local GY = MC(MouseY - 22, Top, math.max(Top, Bot))
+					local Bot = Top + PageButtons.AbsoluteSize.Y - GZ
+					local GX = PageButtons.AbsolutePosition.X + (PageButtons.AbsoluteSize.X - GZ) * 0.5
+					local GY = MC(MouseY - 22 * GS, Top, math.max(Top, Bot))
 					return GX, GY
 				end
 
@@ -2930,31 +2936,50 @@ Library.RegisterFlag = function(Flag: string, Entry: {})
 	Library.Flags[Flag] = Entry
 end
 
+Library.Scale = 1
+Library.AutoScale = true
 Library.UIScale = 1
 
-Library.SetScale = function(Scale: number)
-	Scale = MC(Scale / (Scale > 2 and 100 or 1), 0.75, 1.25)
-	Library.UIScale = Scale
-	for _, Win in Library.Windows do
-		if Win.Canvas then
-			local Existing = Win.Canvas:FindFirstChildOfClass("UIScale")
-			if not Existing then
-				Existing = Add("UIScale", { Parent = Win.Canvas })
-			end
+local function RawScale(): number
+	if not Library.AutoScale then return 1 end
+	local Cam = workspace.CurrentCamera
+	if not Cam then return 1 end
+	local V = Cam.ViewportSize
+	return MC(math.min(math.max(V.X, 1) / 800, math.max(V.Y, 1) / 599), 0.5, 4)
+end
 
-			local Abs = Win.Canvas.AbsolutePosition
-			local Size = Win.Canvas.AbsoluteSize
-			local Center = Abs + Size * 0.5
-			Existing.Scale = Scale
-			task.defer(function()
-				if not Win.Canvas or not Win.Canvas.Parent then return end
-				local NewSize = Win.Canvas.AbsoluteSize
-				local NewPos = Center - NewSize * 0.5
-				Win.Canvas.Position = ClampToScreen(Win.Canvas, UFO(NewPos.X, NewPos.Y))
-			end)
+Library.ApplyScale = function()
+	Library.UIScale = RawScale() * Library.Scale
+	for _, Win in Library.Windows do
+		if Win.Recenter then Win.Recenter() end
+	end
+	for Gui in Library._Scaled do
+		if Gui.Parent then
+			local U = Gui:FindFirstChildOfClass("UIScale")
+			if U then U.Scale = Library.UIScale end
 		end
 	end
 end
+
+Library.SetScale = function(Scale: number)
+	Library.Scale = MC(Scale / (Scale > 2 and 100 or 1), 0.75, 1.25)
+	Library.ApplyScale()
+end
+
+do
+	local Cam
+	local function Bind()
+		local C = workspace.CurrentCamera
+		if C == Cam then return end
+		Cam = C
+		if C then
+			C:GetPropertyChangedSignal("ViewportSize"):Connect(Library.ApplyScale)
+		end
+	end
+	Bind()
+	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(Bind)
+end
+Library.UIScale = RawScale()
 
 Library.Watermark = {
 	Enabled = true;
@@ -2988,6 +3013,7 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 	end
 
 	local Frame = Add("Frame", { Parent = Gui; Name = "Watermark"; AnchorPoint = V2(0.5, 0); Position = UD2(0.5, 0, 0, 12); AutomaticSize = AS.X; Size = UFO(0, 32); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 120; Visible = Library.Watermark.Enabled == true })
+	Track(Frame)
 	Add("UICorner", { Parent = Frame; CornerRadius = UD(0, 7); })
 	Add("UIStroke", { Parent = Frame; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Border; })
 	Add("UIShadow", { Parent = Frame; BlurRadius = UD(0, 16); Spread = UFO(4, 4); Transparency = 0.7; })
@@ -3125,6 +3151,7 @@ Library.Notify = function(propertyTable: {})
 	local gui = EnsureOverlayGui()
 	if not Library._NotifyHost then
 		Library._NotifyHost = Add("Frame", { Parent = gui; Name = "Notifications"; BackgroundTransparency = 1; Size = UFO(200, 0); AutomaticSize = AS.Y; ZIndex = 200 })
+		Track(Library._NotifyHost)
 		Add("UIListLayout", { Parent = Library._NotifyHost; Padding = UD(0, 10); SortOrder = SO.LayoutOrder; HorizontalAlignment = HFA.Right })
 	end
 	Library._NotifyHost.Size = UFO(200, 0)
@@ -3527,7 +3554,7 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 	MenuSection:Slider({
 		Name = "UI scale";
 		Suffix = "%";
-		Value = math.floor(Library.UIScale * 100);
+		Value = math.floor(Library.Scale * 100);
 		Min = 75;
 		Max = 125;
 		Increment = 5;
