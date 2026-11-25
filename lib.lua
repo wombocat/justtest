@@ -258,7 +258,6 @@ local function ResolveIcon(Icon: number | string?): string
 	if AsString:match("^rbxasset") then
 		return AsString
 	end
-	-- bare numeric string → asset id
 	if AsString:match("^%d+$") then
 		return "rbxassetid://" .. AsString
 	end
@@ -268,7 +267,6 @@ local function ResolveIcon(Icon: number | string?): string
 	if Id then
 		return "rbxassetid://" .. tostring(Id)
 	end
-	-- unknown name: empty (caller can hide), never force hash
 	return ""
 end
 
@@ -1672,12 +1670,10 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 			Library.Flags[Toggle.Flag].Set = Toggle.Set
 		end
 
-		local WantNotify = Toggle.Notify
-		if WantNotify == nil then
-			WantNotify = Library.NotifyToggles
-		end
+		local ntf = Toggle.Notify
+		if ntf == nil then ntf = Library.NotifyToggles end
 
-		if not Silent and WantNotify and Library.Notify then
+		if not Silent and ntf and Library.Notify then
 			local Label = self.Text or Toggle.Flag or "Toggle"
 			Library.Notify({
 				Title = Label;
@@ -2051,11 +2047,9 @@ end
 
 Library._Instance = Add("ScreenGui", { Parent = RunService:IsStudio() and Client.PlayerGui or Services:GetService("CoreGui"); Name = "Window"; ZIndexBehavior = ZIB.Sibling; }) :: ScreenGui
 
--- Icons are flat red textures, so ImageColor3 only scales their brightness.
--- Lifting the accent keeps thin marks readable on the dark UI while staying on hue.
-local function AccentTint(Color: Color3, Factor: number?): Color3
-	local F = Factor or 1.5
-	return Color3.new(MM(1, Color.R * F), MM(1, Color.G * F), MM(1, Color.B * F))
+local function Tint(c: Color3, f: number?): Color3
+	f = f or 1.5
+	return Color3.new(MM(1, c.R * f), MM(1, c.G * f), MM(1, c.B * f))
 end
 
 Library.Window = function(self: Library, propertyTable: {})
@@ -2072,41 +2066,24 @@ Library.Window = function(self: Library, propertyTable: {})
 	local Canvas = Add("Frame", { Parent = self._Instance; Name = "Canvas"; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFO(658, 461 + TitleH); }) :: Frame
 	Library.ThemeLink(Canvas, "BackgroundColor3", "Background")
 
-	-- App-style title bar: pentagram mark, brand, subtitle, window controls
 	if TitleH > 0 then
 		local TitleBar = Add("Frame", { Parent = Canvas; Name = "TitleBar"; BackgroundColor3 = Library.Theme.Surface; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(1, 0, 0, TitleH); ZIndex = 4; }) :: Frame
 		Library.ThemeLink(TitleBar, "BackgroundColor3", "Surface")
 		Add("UICorner", { Parent = TitleBar; BottomLeftRadius = UD(0, 0); BottomRightRadius = UD(0, 0); TopLeftRadius = UD(0, 5); TopRightRadius = UD(0, 5); })
 		Add("UIStroke", { Parent = TitleBar; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
-
-		local Brand = Add("Frame", { Parent = TitleBar; Name = "Brand"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 12, 0.5, 0); Size = UFO(112, 28); ZIndex = 5; }) :: Frame
-		local Pent = Add("ImageLabel", {
-			Parent = Brand;
-			Name = "Logo";
-			AnchorPoint = V2(0, 0.5);
-			Position = UD2(0, 0, 0.5, 0);
-			Size = UFO(30, 30);
-			BackgroundTransparency = 1;
-			BorderColor3 = RGB(0, 0, 0);
-			BorderSizePixel = 0;
-			Image = "rbxassetid://131146816502463";
-			ImageColor3 = AccentTint(Library.Theme.Accent);
-			ScaleType = SCL.Fit;
-			ZIndex = 6;
-		}) :: ImageLabel
-
-		local HasSub = type(Window.Subtitle) == "string" and Window.Subtitle ~= ""
-		local BrandName = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 0); Size = HasSub and UD2(1, -40, 0, 16) or UD2(1, -40, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = HasSub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
-		Library.ThemeLink(BrandName, "TextColor3", "Text")
-		if HasSub then
-			local BrandSub = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 16); Size = UD2(1, -40, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
-			Library.ThemeLink(BrandSub, "TextColor3", "TextDim")
+		local br = Add("Frame", { Parent = TitleBar; Name = "Brand"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 12, 0.5, 0); Size = UFO(112, 28); ZIndex = 5; }) :: Frame
+		local logo = Add("ImageLabel", { Parent = br; Name = "Logo"; AnchorPoint = V2(0, 0.5); Position = UD2(0, 0, 0.5, 0); Size = UFO(30, 30); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://131146816502463"; ImageColor3 = Tint(Library.Theme.Accent); ScaleType = SCL.Fit; ZIndex = 6; }) :: ImageLabel
+		local sub = type(Window.Subtitle) == "string" and Window.Subtitle ~= ""
+		local bname = Add("TextLabel", { Parent = br; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 0); Size = sub and UD2(1, -40, 0, 16) or UD2(1, -40, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = sub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+		Library.ThemeLink(bname, "TextColor3", "Text")
+		if sub then
+			local bsub = Add("TextLabel", { Parent = br; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 16); Size = UD2(1, -40, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+			Library.ThemeLink(bsub, "TextColor3", "TextDim")
 		end
-
-		local Controls = Add("Frame", { Parent = TitleBar; Name = "Controls"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(1, 0.5); Position = UD2(1, -10, 0.5, 0); Size = UFO(80, 24); ZIndex = 5; }) :: Frame
-		local IconColor = RGB(255, 255, 255)
-		local function MakeCtrl(Index: number): TextButton
-			local Btn = Add("TextButton", { Parent = Controls; Name = "Ctrl" .. tostring(Index); BackgroundColor3 = Library.Theme.Accent; BackgroundTransparency = 1; BorderSizePixel = 0; AutoButtonColor = false; Size = UFO(24, 24); Position = UFO(Index * 28, 0); Text = ""; ZIndex = 6; }) :: TextButton
+		local ctr = Add("Frame", { Parent = TitleBar; Name = "Controls"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(1, 0.5); Position = UD2(1, -10, 0.5, 0); Size = UFO(80, 24); ZIndex = 5; }) :: Frame
+		local ico = RGB(255, 255, 255)
+		local function mk(Index: number): TextButton
+			local Btn = Add("TextButton", { Parent = ctr; Name = "Ctrl" .. tostring(Index); BackgroundColor3 = Library.Theme.Accent; BackgroundTransparency = 1; BorderSizePixel = 0; AutoButtonColor = false; Size = UFO(24, 24); Position = UFO(Index * 28, 0); Text = ""; ZIndex = 6; }) :: TextButton
 			Add("UICorner", { Parent = Btn; CornerRadius = UD(0, 4); })
 			Btn.MouseEnter:Connect(function()
 				Tween(Btn, { BackgroundTransparency = 0.86 }, 0.12)
@@ -2116,21 +2093,17 @@ Library.Window = function(self: Library, propertyTable: {})
 			end)
 			return Btn
 		end
-
-		local Minimize = MakeCtrl(0)
-		Add("Frame", { Parent = Minimize; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 1); BackgroundColor3 = IconColor; BackgroundTransparency = 0.25; BorderSizePixel = 0; ZIndex = 7; })
-
-		local Maximize = MakeCtrl(1)
-		local MaxBox = Add("Frame", { Parent = Maximize; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 8); BackgroundTransparency = 1; BorderSizePixel = 0; ZIndex = 7; }) :: Frame
-		Add("UIStroke", { Parent = MaxBox; ApplyStrokeMode = ASM.Border; Color = IconColor; Thickness = 1; Transparency = 0.25; })
-
-		local CloseBtn = MakeCtrl(2)
+		local mn = mk(0)
+		Add("Frame", { Parent = mn; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 1); BackgroundColor3 = ico; BackgroundTransparency = 0.25; BorderSizePixel = 0; ZIndex = 7; })
+		local mx = mk(1)
+		local mbox = Add("Frame", { Parent = mx; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 8); BackgroundTransparency = 1; BorderSizePixel = 0; ZIndex = 7; }) :: Frame
+		Add("UIStroke", { Parent = mbox; ApplyStrokeMode = ASM.Border; Color = ico; Thickness = 1; Transparency = 0.25; })
+		local cl = mk(2)
 		for _, Rot in ipairs({ 45, -45 }) do
-			Add("Frame", { Parent = CloseBtn; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 1); Rotation = Rot; BackgroundColor3 = IconColor; BackgroundTransparency = 0.25; BorderSizePixel = 0; ZIndex = 7; })
+			Add("Frame", { Parent = cl; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(9, 1); Rotation = Rot; BackgroundColor3 = ico; BackgroundTransparency = 0.25; BorderSizePixel = 0; ZIndex = 7; })
 		end
-
-		local NormalSize = UFO(658, 461 + TitleH)
-		local function FitCanvas(Size: UDim2)
+		local nsz = UFO(658, 461 + TitleH)
+		local function fit(Size: UDim2)
 			local Cam = workspace.CurrentCamera
 			local Viewport = Cam and Cam.ViewportSize or V2(1280, 720)
 			local Inset = Services:GetService("GuiService"):GetGuiInset()
@@ -2138,12 +2111,10 @@ Library.Window = function(self: Library, propertyTable: {})
 			local Y = math.floor((Viewport.Y - Inset.Y - Size.Y.Offset) * 0.5)
 			Canvas.Position = ClampToScreen(Canvas, UFO(math.max(4, X), math.max(4, Y)))
 		end
-
-		Minimize.Activated:Connect(function()
+		mn.Activated:Connect(function()
 			Library.ToggleMenu(false)
 		end)
-
-		Maximize.Activated:Connect(function()
+		mx.Activated:Connect(function()
 			Window.Maximized = not Window.Maximized
 			if Window.Maximized then
 				local Cam = workspace.CurrentCamera
@@ -2151,24 +2122,20 @@ Library.Window = function(self: Library, propertyTable: {})
 				local Inset = Services:GetService("GuiService"):GetGuiInset()
 				local Big = UFO(math.max(658, math.floor(Viewport.X - 80)), math.max(461 + TitleH, math.floor(Viewport.Y - Inset.Y - 80)))
 				Tween(Canvas, { Size = Big }, 0.18)
-				FitCanvas(Big)
+				fit(Big)
 			else
-				Tween(Canvas, { Size = NormalSize }, 0.18)
-				FitCanvas(NormalSize)
+				Tween(Canvas, { Size = nsz }, 0.18)
+				fit(nsz)
 			end
 		end)
-
-		CloseBtn.Activated:Connect(function()
+		cl.Activated:Connect(function()
 			Library.Unload()
 		end)
-
-		BindDrag(Canvas, TitleBar, true, Controls)
+		BindDrag(Canvas, TitleBar, true, ctr)
 	end
-
 	local Sidebar = Add("Frame", { Parent = Canvas; Name = "Sidebar"; BackgroundColor3 = Library.Theme.Surface; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, TitleH); Size = UD2(0, 75, 1, -TitleH); }) :: Frame
 	Library.ThemeLink(Sidebar, "BackgroundColor3", "Surface")
 
-	-- Author logo (only if Logo / Icon provided — no default hashtag)
 	local LogoSrc = Window.Logo or Window.Icon
 	local LogoH = (LogoSrc and LogoSrc ~= "") and 58 or 8
 	local LogoWrap = Add("Frame", {
@@ -2247,7 +2214,6 @@ Library.Window = function(self: Library, propertyTable: {})
 	})
 
 	Window.TabEditMode = false
-	-- Very small lock/reorder toggle
 	local EditRow = Add("Frame", {
 		Parent = Sidebar;
 		Name = "TabEdit";
@@ -2446,7 +2412,6 @@ Library.Window = function(self: Library, propertyTable: {})
 			LayoutOrder = #Window.Pages;
 		}) :: TextButton
 
-		-- Soft radial selection bloom (centered behind icon)
 		local GlowImage = Add("ImageLabel", {
 			Parent = PageButton;
 			Name = "GlowImage";
@@ -2530,7 +2495,6 @@ Library.Window = function(self: Library, propertyTable: {})
 			end
 		end)
 
-		-- Drag-reorder: ghost snaps in-list only
 		do
 			local Dragging = false
 			local Ghost = nil
@@ -2580,7 +2544,6 @@ Library.Window = function(self: Library, propertyTable: {})
 				ClearGhost()
 				PageButton.Visible = false
 
-				-- Outline-only slot (no solid blue fill)
 				Placeholder = Add("Frame", {
 					Parent = PageButtons;
 					Name = "TabPlaceholder";
@@ -2778,7 +2741,6 @@ Library.ApplyTheme = function()
 		return
 	end
 
-	-- Always derive AccentDark from Accent when accent changes
 	if T.Accent then
 		local H, S, V = T.Accent:ToHSV()
 		T.AccentDark = HSV(H, math.clamp(S * 0.95, 0, 1), math.max(V * 0.55, 0.12))
@@ -2790,7 +2752,6 @@ Library.ApplyTheme = function()
 		end
 	end
 
-	-- ThemeLink registry
 	local Alive = {}
 	for _, Link in Library.ThemeLinks do
 		if Link.Object and Link.Object.Parent then
@@ -2857,7 +2818,7 @@ Library.ApplyTheme = function()
 			local Brand = TitleBar:FindFirstChild("Brand")
 			local Logo = Brand and Brand:FindFirstChild("Logo")
 			if Logo and Logo:IsA("ImageLabel") then
-				Logo.ImageColor3 = AccentTint(T.Accent)
+				Logo.ImageColor3 = Tint(T.Accent)
 			end
 		end
 
@@ -2900,7 +2861,6 @@ Library.ApplyTheme = function()
 		end
 	end
 
-	-- Sections / elements walk
 	for _, Section in (Library.Sections or {}) do
 		local Frame = Section.Frame
 		if Frame and Frame.Parent then
@@ -2916,7 +2876,7 @@ Library.ApplyTheme = function()
 		if Stroke then Stroke.Color = T.Border end
 		if Library.Watermark.Accent then
 			if Library.Watermark.Accent:IsA("ImageLabel") then
-				Library.Watermark.Accent.ImageColor3 = AccentTint(T.Accent)
+				Library.Watermark.Accent.ImageColor3 = Tint(T.Accent)
 			else
 				Library.Watermark.Accent.BackgroundColor3 = T.Accent
 				PaintGrad(Library.Watermark.Accent:FindFirstChildOfClass("UIGradient"))
@@ -2978,7 +2938,6 @@ local function DecodeColor(Value: any): Color3?
 	return nil
 end
 
-
 Library.GetLayout = function()
 	local Layout = {
 		Tabs = {};
@@ -2995,7 +2954,6 @@ Library.GetLayout = function()
 				})
 			end
 			for _, Sub in (Page.SubPages or {}) do
-				-- sections live under subpages via Library.Sections
 			end
 		end
 	end
@@ -3016,7 +2974,6 @@ Library.GetLayout = function()
 end
 
 Library.SaveLayout = function()
-	-- persisted via next config save; also write layout.json if FS available
 	if not HasFS or not HasFS() then
 		return
 	end
@@ -3049,7 +3006,6 @@ Library.ApplyLayout = function(Layout)
 				if Section.Name == Entry.Name and Section.Frame then
 					if Entry.Order then Section.Frame.LayoutOrder = Entry.Order end
 					if Entry.Side and Section.Side ~= Entry.Side then
-						-- move column if possible
 						local Frame = Section.Frame
 						local Parent = Frame.Parent and Frame.Parent.Parent
 						if Parent then
@@ -3103,7 +3059,6 @@ Library.GetConfig = function()
 		end
 	end
 
-
 	return Data
 end
 
@@ -3139,7 +3094,6 @@ Library.LoadConfigData = function(Data: {})
 			end
 		end
 	end
-
 
 	if type(Data.MenuKey) == "string" and EKC[Data.MenuKey] then
 		Library.MenuKey = EKC[Data.MenuKey]
@@ -3382,17 +3336,7 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 		SortOrder = SO.LayoutOrder;
 	})
 
-	local Logo = Add("ImageLabel", {
-		Parent = Frame;
-		Name = "Logo";
-		BackgroundTransparency = 1;
-		BorderSizePixel = 0;
-		Image = "rbxassetid://131146816502463";
-		ImageColor3 = AccentTint(Library.Theme.Accent);
-		ScaleType = SCL.Fit;
-		Size = UFO(20, 20);
-		LayoutOrder = 0;
-	})
+	local Logo = Add("ImageLabel", { Parent = Frame; Name = "Logo"; BackgroundTransparency = 1; BorderSizePixel = 0; Image = "rbxassetid://131146816502463"; ImageColor3 = Tint(Library.Theme.Accent); ScaleType = SCL.Fit; Size = UFO(20, 20); LayoutOrder = 0; })
 
 	local function Chip(Text: string, Order: number, Dim: boolean?): TextLabel
 		return Add("TextLabel", {
@@ -3484,299 +3428,116 @@ Library.MaxNotifications = 4
 Library.NotifyToggles = false
 
 Library.Notify = function(propertyTable: {})
-	local Props = Overwrite({
-		Title = "Notification";
-		Text = "";
-		Content = nil;
-		Duration = 4;
-		Type = "Info";
-		Icon = nil;
-	}, propertyTable or {})
-
-	local Content = Props.Content or Props.Text or Props.Message or ""
-	local Duration = Props.Duration or 4
-	local T = Library.Theme
-
-	local TypeColor = T.Text or RGB(255, 255, 255)
-	if Props.Type == "Success" then
-		TypeColor = RGB(140, 226, 164)
-	elseif Props.Type == "Warning" or Props.Type == "Warn" then
-		TypeColor = RGB(246, 186, 110)
-	elseif Props.Type == "Error" then
-		TypeColor = RGB(255, 118, 108)
-	end
-
-	local Gui = EnsureOverlayGui()
+	local p = Overwrite({ Title = "Notification"; Text = ""; Content = nil; Duration = 4; Type = "Info"; Icon = nil }, propertyTable or {})
+	local msg = p.Content or p.Text or p.Message or ""
+	local dur = p.Duration or 4
+	local th = Library.Theme
+	local tc = th.Text or RGB(255, 255, 255)
+	if p.Type == "Success" then tc = RGB(140, 226, 164)
+	elseif p.Type == "Warning" or p.Type == "Warn" then tc = RGB(246, 186, 110)
+	elseif p.Type == "Error" then tc = RGB(255, 118, 108) end
+	local gui = EnsureOverlayGui()
 	if not Library._NotifyHost then
-		Library._NotifyHost = Add("Frame", {
-			Parent = Gui;
-			Name = "Notifications";
-			BackgroundTransparency = 1;
-			Size = UFO(200, 0);
-			AutomaticSize = AS.Y;
-			ZIndex = 200;
-		})
-		Add("UIListLayout", {
-			Parent = Library._NotifyHost;
-			Padding = UD(0, 10);
-			SortOrder = SO.LayoutOrder;
-			HorizontalAlignment = HFA.Right;
-		})
+		Library._NotifyHost = Add("Frame", { Parent = gui; Name = "Notifications"; BackgroundTransparency = 1; Size = UFO(200, 0); AutomaticSize = AS.Y; ZIndex = 200 })
+		Add("UIListLayout", { Parent = Library._NotifyHost; Padding = UD(0, 10); SortOrder = SO.LayoutOrder; HorizontalAlignment = HFA.Right })
 	end
-
 	Library._NotifyHost.Size = UFO(200, 0)
-
-	local Pos = Library.NotifyPosition or "Top Right"
-	local Layout = Library._NotifyHost:FindFirstChildOfClass("UIListLayout")
-	if Pos == "Top Left" then
+	local pos = Library.NotifyPosition or "Top Right"
+	local list = Library._NotifyHost:FindFirstChildOfClass("UIListLayout")
+	if pos == "Top Left" then
 		Library._NotifyHost.AnchorPoint = V2(0, 0)
 		Library._NotifyHost.Position = UFO(16, 16)
-		Layout.HorizontalAlignment = HFA.Left
-	elseif Pos == "Bottom Left" then
+		list.HorizontalAlignment = HFA.Left
+	elseif pos == "Bottom Left" then
 		Library._NotifyHost.AnchorPoint = V2(0, 1)
 		Library._NotifyHost.Position = UD2(0, 16, 1, -16)
-		Layout.HorizontalAlignment = HFA.Left
-	elseif Pos == "Bottom Right" then
+		list.HorizontalAlignment = HFA.Left
+	elseif pos == "Bottom Right" then
 		Library._NotifyHost.AnchorPoint = V2(1, 1)
 		Library._NotifyHost.Position = UD2(1, -16, 1, -16)
-		Layout.HorizontalAlignment = HFA.Right
+		list.HorizontalAlignment = HFA.Right
 	else
 		Library._NotifyHost.AnchorPoint = V2(1, 0)
 		Library._NotifyHost.Position = UD2(1, -16, 0, 16)
-		Layout.HorizontalAlignment = HFA.Right
+		list.HorizontalAlignment = HFA.Right
 	end
-
 	Library._NotifyOrder = (Library._NotifyOrder or 0) + 1
-
-	local HasBody = Content ~= ""
-	local CardH = HasBody and 58 or 42
-	local SlideDir = (string.find(Pos, "Left") and -1) or 1
-
-	local Slot = Add("Frame", {
-		Parent = Library._NotifyHost;
-		Size = UD2(1, 0, 0, CardH + 5);
-		BackgroundTransparency = 1;
-		LayoutOrder = Library._NotifyOrder;
-		ClipsDescendants = false;
-	})
-
-	local Shell = Add("Frame", {
-		Parent = Slot;
-		Position = UFO(210 * SlideDir, 0);
-		Size = UD2(1, 0, 0, CardH);
-		BackgroundTransparency = 1;
-	})
-
-	local Shadow = Add("ImageLabel", {
-		Parent = Shell;
-		Position = UFO(-8, -8);
-		Size = UD2(1, 16, 1, 16);
-		BackgroundTransparency = 1;
-		Image = "rbxassetid://6014261993";
-		ImageColor3 = RGB(0, 0, 0);
-		ImageTransparency = 1;
-		ScaleType = SCL.Slice;
-		SliceCenter = Rect.new(49, 49, 450, 450);
-		ZIndex = 0;
-	})
-
-	local Accent = T.Accent or RGB(160, 10, 22)
-	local AccentBright = AccentTint(Accent)
-	local IconColor = Accent
-	if Props.Type == "Success" or Props.Type == "Warning" or Props.Type == "Warn" or Props.Type == "Error" then
-		IconColor = TypeColor
+	local body = msg ~= ""
+	local ch = body and 58 or 42
+	local dir = string.find(pos, "Left") and -1 or 1
+	local row = Add("Frame", { Parent = Library._NotifyHost; Size = UD2(1, 0, 0, ch + 5); BackgroundTransparency = 1; LayoutOrder = Library._NotifyOrder; ClipsDescendants = false })
+	local sh = Add("Frame", { Parent = row; Position = UFO(210 * dir, 0); Size = UD2(1, 0, 0, ch); BackgroundTransparency = 1 })
+	local shd = Add("ImageLabel", { Parent = sh; Position = UFO(-8, -8); Size = UD2(1, 16, 1, 16); BackgroundTransparency = 1; Image = "rbxassetid://6014261993"; ImageColor3 = RGB(0, 0, 0); ImageTransparency = 1; ScaleType = SCL.Slice; SliceCenter = Rect.new(49, 49, 450, 450); ZIndex = 0 })
+	local ac = th.Accent or RGB(160, 10, 22)
+	local ac2 = Tint(ac)
+	local ic = ac
+	if p.Type == "Success" or p.Type == "Warning" or p.Type == "Warn" or p.Type == "Error" then ic = tc end
+	local ic2 = (ic == ac) and ac2 or ic
+	local card = Add("CanvasGroup", { Parent = sh; Size = UFS(1, 1); BackgroundColor3 = th.SurfaceAlt or RGB(20, 20, 21); BorderSizePixel = 0; GroupTransparency = 1; ZIndex = 1 })
+	Add("UICorner", { Parent = card; CornerRadius = UD(0, 8); })
+	local stroke = Add("UIStroke", { Parent = card; ApplyStrokeMode = ASM.Border; Color = th.Border or RGB(36, 37, 37); Thickness = 1; })
+	local isz = 26
+	local ix = 10
+	local cy = math.floor(ch / 2)
+	Add("ImageLabel", { Parent = card; AnchorPoint = V2(0.5, 0.5); Position = UFO(ix + isz / 2, cy); Size = UFO(44, 44); BackgroundTransparency = 1; BorderSizePixel = 0; Image = "rbxassetid://8992230677"; ImageColor3 = ic; ImageTransparency = 0.6; ZIndex = 2 })
+	Add("ImageLabel", { Parent = card; AnchorPoint = V2(0.5, 0.5); Position = UFO(ix + isz / 2, cy); Size = UFO(isz, isz); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://131146816502463"; ImageColor3 = ic2; ScaleType = SCL.Fit; ZIndex = 3 })
+	Add("Frame", { Parent = card; AnchorPoint = V2(0, 0.5); Position = UFO(ix + isz + 7, cy); Size = UD2(0, 1, 0, body and 26 or 20); BackgroundColor3 = ic; BackgroundTransparency = 0.2; BorderSizePixel = 0; ZIndex = 4 })
+	local tx = 52
+	local tw = -tx - 22
+	Add("TextLabel", { Parent = card; BackgroundTransparency = 1; Position = UFO(tx, body and 10 or 0); Size = body and UD2(1, tw, 0, 15) or UD2(1, tw, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = p.Title or "Notification"; TextColor3 = th.Text or RGB(255, 255, 255); TextSize = 12; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; TextTruncate = ETT.AtEnd; ZIndex = 4 })
+	if body then
+		Add("TextLabel", { Parent = card; BackgroundTransparency = 1; Position = UFO(tx, 25); Size = UD2(1, tw, 0, 13); FontFace = FN("rbxassetid://12187365364", FW.Medium, FS.Normal); Text = msg; TextColor3 = th.TextDim or RGB(170, 158, 160); TextSize = 10; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; TextTruncate = ETT.AtEnd; ZIndex = 4 })
 	end
-	local IconTint = (IconColor == Accent) and AccentBright or IconColor
-
-	local Card = Add("CanvasGroup", {
-		Parent = Shell;
-		Size = UFS(1, 1);
-		BackgroundColor3 = T.SurfaceAlt or RGB(20, 20, 21);
-		BorderSizePixel = 0;
-		GroupTransparency = 1;
-		ZIndex = 1;
-	})
-	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 8); })
-	local CardStroke = Add("UIStroke", {
-		Parent = Card;
-		ApplyStrokeMode = ASM.Border;
-		Color = T.Border or RGB(36, 37, 37);
-		Thickness = 1;
-	})
-
-	local IconSize = 26
-	local IconX = 10
-	local CenterY = math.floor(CardH / 2)
-
-	Add("ImageLabel", {
-		Parent = Card;
-		AnchorPoint = V2(0.5, 0.5);
-		Position = UFO(IconX + IconSize / 2, CenterY);
-		Size = UFO(44, 44);
-		BackgroundTransparency = 1;
-		BorderSizePixel = 0;
-		Image = "rbxassetid://8992230677";
-		ImageColor3 = IconColor;
-		ImageTransparency = 0.6;
-		ZIndex = 2;
-	})
-	Add("ImageLabel", {
-		Parent = Card;
-		AnchorPoint = V2(0.5, 0.5);
-		Position = UFO(IconX + IconSize / 2, CenterY);
-		Size = UFO(IconSize, IconSize);
-		BackgroundTransparency = 1;
-		BorderColor3 = RGB(0, 0, 0);
-		BorderSizePixel = 0;
-		Image = "rbxassetid://131146816502463";
-		ImageColor3 = IconTint;
-		ScaleType = SCL.Fit;
-		ZIndex = 3;
-	})
-
-	Add("Frame", {
-		Parent = Card;
-		AnchorPoint = V2(0, 0.5);
-		Position = UFO(IconX + IconSize + 7, CenterY);
-		Size = UD2(0, 1, 0, HasBody and 26 or 20);
-		BackgroundColor3 = IconColor;
-		BackgroundTransparency = 0.2;
-		BorderSizePixel = 0;
-		ZIndex = 4;
-	})
-
-	local TextX = 52
-	local TextW = -TextX - 22
-	Add("TextLabel", {
-		Parent = Card;
-		BackgroundTransparency = 1;
-		Position = UFO(TextX, HasBody and 10 or 0);
-		Size = HasBody and UD2(1, TextW, 0, 15) or UD2(1, TextW, 1, 0);
-		FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal);
-		Text = Props.Title or "Notification";
-		TextColor3 = T.Text or RGB(255, 255, 255);
-		TextSize = 12;
-		TextXAlignment = TXA.Left;
-		TextYAlignment = TYA.Center;
-		TextTruncate = ETT.AtEnd;
-		ZIndex = 4;
-	})
-
-	if HasBody then
-		Add("TextLabel", {
-			Parent = Card;
-			BackgroundTransparency = 1;
-			Position = UFO(TextX, 25);
-			Size = UD2(1, TextW, 0, 13);
-			FontFace = FN("rbxassetid://12187365364", FW.Medium, FS.Normal);
-			Text = Content;
-			TextColor3 = T.TextDim or RGB(170, 158, 160);
-			TextSize = 10;
-			TextXAlignment = TXA.Left;
-			TextYAlignment = TYA.Center;
-			TextTruncate = ETT.AtEnd;
-			ZIndex = 4;
-		})
+	local x = Add("TextButton", { Parent = card; AnchorPoint = V2(1, 0); Position = UD2(1, -7, 0, 6); Size = UFO(16, 16); BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderSizePixel = 0; AutoButtonColor = false; Text = ""; ZIndex = 6 })
+	Add("UICorner", { Parent = x; CornerRadius = UD(0, 5); })
+	local xc = RGB(150, 138, 140)
+	local xbs = {}
+	for _, r in ipairs({ 45, -45 }) do
+		TIS(xbs, Add("Frame", { Parent = x; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(7, 1); Rotation = r; BackgroundColor3 = xc; BorderSizePixel = 0; ZIndex = 7 }))
 	end
-
-	local Close = Add("TextButton", {
-		Parent = Card;
-		AnchorPoint = V2(1, 0);
-		Position = UD2(1, -7, 0, 6);
-		Size = UFO(16, 16);
-		BackgroundColor3 = RGB(255, 255, 255);
-		BackgroundTransparency = 1;
-		BorderSizePixel = 0;
-		AutoButtonColor = false;
-		Text = "";
-		ZIndex = 6;
-	})
-	Add("UICorner", { Parent = Close; CornerRadius = UD(0, 5); })
-	local CrossColor = RGB(150, 138, 140)
-	local CrossBars = {}
-	for _, Rot in ipairs({ 45, -45 }) do
-		TIS(CrossBars, Add("Frame", {
-			Parent = Close;
-			AnchorPoint = V2(0.5, 0.5);
-			Position = UFS(0.5, 0.5);
-			Size = UFO(7, 1);
-			Rotation = Rot;
-			BackgroundColor3 = CrossColor;
-			BorderSizePixel = 0;
-			ZIndex = 7;
-		}))
-	end
-	Close.MouseEnter:Connect(function()
-		Tween(Close, { BackgroundTransparency = 0.85 }, 0.12)
-		for _, B in ipairs(CrossBars) do
-			Tween(B, { BackgroundColor3 = T.Text or RGB(255, 255, 255) }, 0.12)
-		end
+	x.MouseEnter:Connect(function()
+		Tween(x, { BackgroundTransparency = 0.85 }, 0.12)
+		for _, b in ipairs(xbs) do Tween(b, { BackgroundColor3 = th.Text or RGB(255, 255, 255) }, 0.12) end
 	end)
-	Close.MouseLeave:Connect(function()
-		Tween(Close, { BackgroundTransparency = 1 }, 0.15)
-		for _, B in ipairs(CrossBars) do
-			Tween(B, { BackgroundColor3 = CrossColor }, 0.15)
-		end
+	x.MouseLeave:Connect(function()
+		Tween(x, { BackgroundTransparency = 1 }, 0.15)
+		for _, b in ipairs(xbs) do Tween(b, { BackgroundColor3 = xc }, 0.15) end
 	end)
-
-	local BarBG = Add("Frame", {
-		Parent = Card;
-		AnchorPoint = V2(0, 1);
-		Position = UD2(0, 10, 1, -6);
-		Size = UD2(1, -20, 0, 2);
-		BackgroundColor3 = RGB(52, 50, 51);
-		BorderSizePixel = 0;
-		ZIndex = 5;
-	})
-	Add("UICorner", { Parent = BarBG; CornerRadius = UD(1, 0); })
-	local Bar = Add("Frame", {
-		Parent = BarBG;
-		Size = UFS(1, 1);
-		BackgroundColor3 = IconColor;
-		BorderSizePixel = 0;
-		ZIndex = 6;
-	})
-	Add("UICorner", { Parent = Bar; CornerRadius = UD(1, 0); })
-	Add("UIGradient", { Parent = Bar; Color = CS{ CSK(0, IconColor), CSK(1, IconTint) }; })
-	Add("UIStroke", { Parent = Bar; ApplyStrokeMode = ASM.Border; Color = IconColor; Transparency = 0.55; Thickness = 1; })
-	Tween(Shell, { Position = UFO(0, 0) }, 0.35, ES.Quint)
-	Tween(Card, { GroupTransparency = 0 }, 0.22)
-	Tween(Shadow, { ImageTransparency = 0.7 }, 0.3)
-	Tween(Bar, { Size = UD2(0, 0, 1, 0) }, Duration, ES.Linear)
-
-	local Closed = false
-	local function Dismiss()
-		if Closed then return end
-		Closed = true
-		for i, Fn in Library._Toasts do
-			if Fn == Dismiss then
-				table.remove(Library._Toasts, i)
-				break
-			end
+	local bbg = Add("Frame", { Parent = card; AnchorPoint = V2(0, 1); Position = UD2(0, 10, 1, -6); Size = UD2(1, -20, 0, 2); BackgroundColor3 = RGB(52, 50, 51); BorderSizePixel = 0; ZIndex = 5 })
+	Add("UICorner", { Parent = bbg; CornerRadius = UD(1, 0); })
+	local bar = Add("Frame", { Parent = bbg; Size = UFS(1, 1); BackgroundColor3 = ic; BorderSizePixel = 0; ZIndex = 6 })
+	Add("UICorner", { Parent = bar; CornerRadius = UD(1, 0); })
+	Add("UIGradient", { Parent = bar; Color = CS{ CSK(0, ic), CSK(1, ic2) }; })
+	Add("UIStroke", { Parent = bar; ApplyStrokeMode = ASM.Border; Color = ic; Transparency = 0.55; Thickness = 1; })
+	Tween(sh, { Position = UFO(0, 0) }, 0.35, ES.Quint)
+	Tween(card, { GroupTransparency = 0 }, 0.22)
+	Tween(shd, { ImageTransparency = 0.7 }, 0.3)
+	Tween(bar, { Size = UD2(0, 0, 1, 0) }, dur, ES.Linear)
+	local dead = false
+	local function Kill()
+		if dead then return end
+		dead = true
+		for i, fn in Library._Toasts do
+			if fn == Kill then table.remove(Library._Toasts, i) break end
 		end
-		Slot.ClipsDescendants = true
-		Tween(Shell, { Position = UFO(210 * SlideDir, 0) }, 0.25, ES.Quint)
-		Tween(Card, { GroupTransparency = 1 }, 0.18)
-		Tween(CardStroke, { Transparency = 1 }, 0.12)
-		Tween(Shadow, { ImageTransparency = 1 }, 0.18)
+		row.ClipsDescendants = true
+		Tween(sh, { Position = UFO(210 * dir, 0) }, 0.25, ES.Quint)
+		Tween(card, { GroupTransparency = 1 }, 0.18)
+		Tween(stroke, { Transparency = 1 }, 0.12)
+		Tween(shd, { ImageTransparency = 1 }, 0.18)
 		task.delay(0.2, function()
-			Tween(Slot, { Size = UD2(1, 0, 0, 0) }, 0.18, ES.Quint)
-			task.delay(0.2, function()
-				Slot:Destroy()
-			end)
+			Tween(row, { Size = UD2(1, 0, 0, 0) }, 0.18, ES.Quint)
+			task.delay(0.2, function() row:Destroy() end)
 		end)
 	end
-
-	task.delay(Duration, Dismiss)
-	Close.Activated:Connect(Dismiss)
-	TIS(Library._Toasts, Dismiss)
-
+	task.delay(dur, Kill)
+	x.Activated:Connect(Kill)
+	TIS(Library._Toasts, Kill)
 	while #Library._Toasts > (Library.MaxNotifications or 4) do
-		local Oldest = table.remove(Library._Toasts, 1)
-		if Oldest then Oldest() end
+		local old = table.remove(Library._Toasts, 1)
+		if old then old() end
 	end
-
-	return { Dismiss = Dismiss }
+	return { Dismiss = Kill }
 end
 
 Library.Unload = function()
@@ -4160,6 +3921,5 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 
 	return Page
 end
-
 
 return Library
