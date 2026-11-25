@@ -2049,7 +2049,7 @@ Library._Instance = Add("ScreenGui", { Parent = RunService:IsStudio() and Client
 -- Icons are flat red textures, so ImageColor3 only scales their brightness.
 -- Lifting the accent keeps thin marks readable on the dark UI while staying on hue.
 local function AccentTint(Color: Color3, Factor: number?): Color3
-	local F = Factor or 1.35
+	local F = Factor or 1.9
 	return Color3.new(MM(1, Color.R * F), MM(1, Color.G * F), MM(1, Color.B * F))
 end
 
@@ -2080,21 +2080,21 @@ Library.Window = function(self: Library, propertyTable: {})
 			Name = "Logo";
 			AnchorPoint = V2(0, 0.5);
 			Position = UD2(0, 0, 0.5, 0);
-			Size = UFO(26, 26);
+			Size = UFO(30, 30);
 			BackgroundTransparency = 1;
 			BorderColor3 = RGB(0, 0, 0);
 			BorderSizePixel = 0;
-			Image = "rbxassetid://18895370427";
+			Image = "rbxassetid://12976237986";
 			ImageColor3 = AccentTint(Library.Theme.Accent);
 			ScaleType = SCL.Fit;
 			ZIndex = 6;
 		}) :: ImageLabel
 
 		local HasSub = type(Window.Subtitle) == "string" and Window.Subtitle ~= ""
-		local BrandName = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 0); Size = HasSub and UD2(1, -34, 0, 16) or UD2(1, -34, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = HasSub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+		local BrandName = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 0); Size = HasSub and UD2(1, -40, 0, 16) or UD2(1, -40, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = HasSub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
 		Library.ThemeLink(BrandName, "TextColor3", "Text")
 		if HasSub then
-			local BrandSub = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 34, 0, 16); Size = UD2(1, -34, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+			local BrandSub = Add("TextLabel", { Parent = Brand; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 16); Size = UD2(1, -40, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
 			Library.ThemeLink(BrandSub, "TextColor3", "TextDim")
 		end
 
@@ -3382,10 +3382,10 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 		Name = "Logo";
 		BackgroundTransparency = 1;
 		BorderSizePixel = 0;
-		Image = "rbxassetid://18895370427";
+		Image = "rbxassetid://12976237986";
 		ImageColor3 = AccentTint(Library.Theme.Accent);
 		ScaleType = SCL.Fit;
-		Size = UFO(18, 18);
+		Size = UFO(20, 20);
 		LayoutOrder = 0;
 	})
 
