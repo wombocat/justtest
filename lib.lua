@@ -1672,7 +1672,12 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 			Library.Flags[Toggle.Flag].Set = Toggle.Set
 		end
 
-		if not Silent and Library.NotifyToggles and Library.Notify then
+		local WantNotify = Toggle.Notify
+		if WantNotify == nil then
+			WantNotify = Library.NotifyToggles
+		end
+
+		if not Silent and WantNotify and Library.Notify then
 			local Label = self.Text or Toggle.Flag or "Toggle"
 			Library.Notify({
 				Title = Label;
@@ -3476,7 +3481,7 @@ end
 Library._NotifyOrder = 0
 Library._Toasts = {}
 Library.MaxNotifications = 4
-Library.NotifyToggles = true
+Library.NotifyToggles = false
 
 Library.Notify = function(propertyTable: {})
 	local Props = Overwrite({
@@ -4128,9 +4133,9 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 			Library.NotifyPosition = Value
 		end;
 	})
-	local NT = NotifySection:Label({ Text = "Notify on toggles" })
+	local NT = NotifySection:Label({ Text = "Notify on toggles (all)" })
 	NT:Toggle({
-		State = Library.NotifyToggles ~= false;
+		State = Library.NotifyToggles == true;
 		Flag = "NotifyToggles";
 		Callback = function(State)
 			Library.NotifyToggles = State
