@@ -2945,7 +2945,7 @@ local function RawScale(): number
 	local Cam = workspace.CurrentCamera
 	if not Cam then return 1 end
 	local V = Cam.ViewportSize
-	return MC(math.min(math.max(V.X, 1) / 800, math.max(V.Y, 1) / 599), 0.5, 4)
+	return MC(math.min(math.max(V.X, 1) / 1920, math.max(V.Y, 1) / 1009), 0.4, 1)
 end
 
 Library.ApplyScale = function()
