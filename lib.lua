@@ -2049,7 +2049,7 @@ Library._Instance = Add("ScreenGui", { Parent = RunService:IsStudio() and Client
 -- Icons are flat red textures, so ImageColor3 only scales their brightness.
 -- Lifting the accent keeps thin marks readable on the dark UI while staying on hue.
 local function AccentTint(Color: Color3, Factor: number?): Color3
-	local F = Factor or 1.9
+	local F = Factor or 1.5
 	return Color3.new(MM(1, Color.R * F), MM(1, Color.G * F), MM(1, Color.B * F))
 end
 
@@ -2084,7 +2084,7 @@ Library.Window = function(self: Library, propertyTable: {})
 			BackgroundTransparency = 1;
 			BorderColor3 = RGB(0, 0, 0);
 			BorderSizePixel = 0;
-			Image = "rbxassetid://12976237986";
+			Image = "rbxassetid://107254627880403";
 			ImageColor3 = AccentTint(Library.Theme.Accent);
 			ScaleType = SCL.Fit;
 			ZIndex = 6;
@@ -3382,7 +3382,7 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 		Name = "Logo";
 		BackgroundTransparency = 1;
 		BorderSizePixel = 0;
-		Image = "rbxassetid://12976237986";
+		Image = "rbxassetid://107254627880403";
 		ImageColor3 = AccentTint(Library.Theme.Accent);
 		ScaleType = SCL.Fit;
 		Size = UFO(20, 20);
