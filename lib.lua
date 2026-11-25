@@ -2367,6 +2367,11 @@ Library.Window = function(self: Library, propertyTable: {})
 	end
 
 	Canvas.GroupTransparency = 1
+	local WSh = Canvas:FindFirstChildOfClass("UIShadow")
+	if WSh then
+		WSh.Transparency = 1
+		Tween(WSh, { Transparency = 0.65 }, 0.22)
+	end
 	Tween(Canvas, { GroupTransparency = 0 }, 0.22)
 	Library.PlaySound("Menu")
 	return Window
@@ -3240,14 +3245,23 @@ Library.ToggleMenu = function(State: boolean?)
 	for _, Win in Library.Windows do
 		local C = Win.Canvas
 		if C then
+			local Sh = C:FindFirstChildOfClass("UIShadow")
 			if State then
 				C.Visible = true
 				C.GroupTransparency = 1
+				if Sh then
+					Sh.Transparency = 1
+					Tween(Sh, { Transparency = 0.65 }, 0.2)
+				end
 				Tween(C, { GroupTransparency = 0 }, 0.2)
 			else
+				if Sh then Tween(Sh, { Transparency = 1 }, 0.16) end
 				Tween(C, { GroupTransparency = 1 }, 0.16)
 				task.delay(0.17, function()
-					if not Library.MenuOpen then C.Visible = false end
+					if not Library.MenuOpen then
+						C.Visible = false
+						if Sh then Sh.Transparency = 1 end
+					end
 				end)
 			end
 		end
