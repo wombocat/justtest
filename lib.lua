@@ -3268,12 +3268,18 @@ Library.AskUnload = function()
 	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Position = UD2(0.5, 0, 0, 43); Size = UFO(230, 16); Text = "All menu functions will stop"; TextColor3 = RGB(160, 142, 144); TextSize = 13; ZIndex = 502; })
 
 	local function Btn(Text: string, X: number, On: boolean): TextButton
-		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = On and RGB(255, 255, 255) or RGB(148, 136, 138); BorderSizePixel = 0; Position = UFO(X, 76); Size = UFO(115, 38); Text = ""; ZIndex = 502; }) :: TextButton
-		Add("UIGradient", { Parent = B; Color = CS{ CSK(0, Library.Theme.AccentDark), CSK(1, Library.Theme.Accent) }; Rotation = -70; })
+		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BorderSizePixel = 0; Position = UFO(X, 76); Size = UFO(115, 38); Text = ""; ZIndex = 502; }) :: TextButton
+		local Stroke
+		if On then
+			Add("UIGradient", { Parent = B; Color = CS{ CSK(0, Library.Theme.AccentDark), CSK(1, Library.Theme.Accent) }; Rotation = -70; })
+		else
+			Add("UIGradient", { Parent = B; Color = CS{ CSK(0, RGB(52, 50, 52)), CSK(1, RGB(122, 116, 118)) }; Rotation = -70; })
+			Stroke = Add("UIStroke", { Parent = B; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Border; })
+		end
 		Add("UICorner", { Parent = B; CornerRadius = UD(0, 5); })
 		local L = Add("TextLabel", { Parent = B; BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = Text; TextColor3 = RGB(255, 255, 255); TextSize = 16; ZIndex = 502; }) :: TextLabel
-		B.MouseEnter:Connect(function() Tween(B, { BackgroundColor3 = On and RGB(255, 255, 255) or RGB(188, 176, 178) }, 0.12) end)
-		B.MouseLeave:Connect(function() Tween(B, { BackgroundColor3 = On and RGB(255, 255, 255) or RGB(148, 136, 138) }, 0.12) end)
+		B.MouseEnter:Connect(function() if Stroke then Tween(Stroke, { Color = RGB(92, 86, 88) }, 0.12) end end)
+		B.MouseLeave:Connect(function() if Stroke then Tween(Stroke, { Color = Library.Theme.Border }, 0.12) end end)
 		return B
 	end
 
