@@ -1633,6 +1633,7 @@ Library.SubElements.Keybind = function(self: Library, propertyTable: {})
 		end
 
 		if State then
+			Library.PlaySound("Settings")
 			ClaimPopup(Keybind)
 
 			local Target = UFO(
@@ -3062,7 +3063,8 @@ Library._Toasts = {}
 Library.Sounds = {
 	Menu = 117037840785385;
 	Tab = 111764646352235;
-	Notify = 118800406096048;
+	Settings = 118800406096048;
+	Notify = 0;
 	Dropdown = 112641976046864;
 	Toggle = 73629124033518;
 }
