@@ -3507,7 +3507,7 @@ Library.Notify = function(propertyTable: {})
 			Parent = Gui;
 			Name = "Notifications";
 			BackgroundTransparency = 1;
-			Size = UFO(268, 0);
+			Size = UFO(300, 0);
 			AutomaticSize = AS.Y;
 			ZIndex = 200;
 		})
@@ -3542,12 +3542,12 @@ Library.Notify = function(propertyTable: {})
 	Library._NotifyOrder = (Library._NotifyOrder or 0) + 1
 
 	local HasBody = Content ~= ""
-	local CardH = HasBody and 66 or 44
+	local CardH = HasBody and 74 or 50
 	local SlideDir = (string.find(Pos, "Left") and -1) or 1
 
 	local Slot = Add("Frame", {
 		Parent = Library._NotifyHost;
-		Size = UD2(1, 0, 0, CardH + 4);
+		Size = UD2(1, 0, 0, CardH + 6);
 		BackgroundTransparency = 1;
 		LayoutOrder = Library._NotifyOrder;
 		ClipsDescendants = false;
@@ -3555,7 +3555,7 @@ Library.Notify = function(propertyTable: {})
 
 	local Shell = Add("Frame", {
 		Parent = Slot;
-		Position = UFO(280 * SlideDir, 0);
+		Position = UFO(320 * SlideDir, 0);
 		Size = UD2(1, 0, 0, CardH);
 		BackgroundTransparency = 1;
 	})
@@ -3575,7 +3575,11 @@ Library.Notify = function(propertyTable: {})
 
 	local Accent = T.Accent or RGB(160, 10, 22)
 	local AccentBright = AccentTint(Accent)
-	local LineColor = T.Border or RGB(36, 37, 37)
+	local IconColor = Accent
+	if Props.Type == "Success" or Props.Type == "Warning" or Props.Type == "Warn" or Props.Type == "Error" then
+		IconColor = TypeColor
+	end
+	local IconTint = (IconColor == Accent) and AccentBright or IconColor
 
 	local Card = Add("CanvasGroup", {
 		Parent = Shell;
@@ -3585,64 +3589,69 @@ Library.Notify = function(propertyTable: {})
 		GroupTransparency = 1;
 		ZIndex = 1;
 	})
-	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 9); })
+	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 12); })
 	local CardStroke = Add("UIStroke", {
 		Parent = Card;
 		ApplyStrokeMode = ASM.Border;
-		Color = LineColor;
+		Color = T.Border or RGB(36, 37, 37);
 		Thickness = 1;
 	})
 
-	-- thin accent strip down the left edge
-	local Edge = Add("Frame", {
-		Parent = Card;
-		Size = UD2(0, 2, 1, -18);
-		Position = UD2(0, 0, 0.5, 0);
-		AnchorPoint = V2(0, 0.5);
-		BackgroundColor3 = Accent;
-		BorderSizePixel = 0;
-		ZIndex = 4;
-	})
-	Add("UICorner", { Parent = Edge; CornerRadius = UD(1, 0); })
+	local IconSize = 34
+	local IconX = 14
+	local CenterY = math.floor(CardH / 2)
 
-	-- brand tile with pentagram
-	local TileSize = 34
-	local Tile = Add("Frame", {
-		Parent = Card;
-		Position = UFO(12, HasBody and 16 or 5);
-		Size = UFO(TileSize, TileSize);
-		BackgroundColor3 = Accent;
-		BackgroundTransparency = 0.85;
-		BorderSizePixel = 0;
-		ZIndex = 3;
-	})
-	Add("UICorner", { Parent = Tile; CornerRadius = UD(0, 9); })
-	Add("UIStroke", { Parent = Tile; ApplyStrokeMode = ASM.Border; Color = Accent; Transparency = 0.6; Thickness = 1; })
+	-- soft glow behind the mark
 	Add("ImageLabel", {
-		Parent = Tile;
+		Parent = Card;
 		AnchorPoint = V2(0.5, 0.5);
-		Position = UFS(0.5, 0.5);
-		Size = UFO(22, 22);
+		Position = UFO(IconX + IconSize / 2, CenterY);
+		Size = UFO(58, 58);
+		BackgroundTransparency = 1;
+		BorderSizePixel = 0;
+		Image = "rbxassetid://8992230677";
+		ImageColor3 = IconColor;
+		ImageTransparency = 0.55;
+		ZIndex = 2;
+	})
+	-- pentagram mark
+	Add("ImageLabel", {
+		Parent = Card;
+		AnchorPoint = V2(0.5, 0.5);
+		Position = UFO(IconX + IconSize / 2, CenterY);
+		Size = UFO(IconSize, IconSize);
 		BackgroundTransparency = 1;
 		BorderColor3 = RGB(0, 0, 0);
 		BorderSizePixel = 0;
 		Image = "rbxassetid://131146816502463";
-		ImageColor3 = AccentBright;
+		ImageColor3 = IconTint;
 		ScaleType = SCL.Fit;
+		ZIndex = 3;
+	})
+
+	-- thin divider between mark and text
+	Add("Frame", {
+		Parent = Card;
+		AnchorPoint = V2(0, 0.5);
+		Position = UFO(IconX + IconSize + 8, CenterY);
+		Size = UD2(0, 1, 0, HasBody and 32 or 24);
+		BackgroundColor3 = IconColor;
+		BackgroundTransparency = 0.15;
+		BorderSizePixel = 0;
 		ZIndex = 4;
 	})
 
-	local TextX = 56
+	local TextX = 70
 	local TextW = -TextX - 34
 	Add("TextLabel", {
 		Parent = Card;
 		BackgroundTransparency = 1;
-		Position = UFO(TextX, HasBody and 13 or 0);
-		Size = HasBody and UD2(1, TextW, 0, 15) or UD2(1, TextW, 1, 0);
+		Position = UFO(TextX, HasBody and 18 or 0);
+		Size = HasBody and UD2(1, TextW, 0, 19) or UD2(1, TextW, 1, 0);
 		FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal);
 		Text = Props.Title or "Notification";
-		TextColor3 = TypeColor;
-		TextSize = 13;
+		TextColor3 = T.Text or RGB(255, 255, 255);
+		TextSize = 15;
 		TextXAlignment = TXA.Left;
 		TextYAlignment = TYA.Center;
 		TextTruncate = ETT.AtEnd;
@@ -3653,12 +3662,12 @@ Library.Notify = function(propertyTable: {})
 		Add("TextLabel", {
 			Parent = Card;
 			BackgroundTransparency = 1;
-			Position = UFO(TextX, 30);
-			Size = UD2(1, TextW, 0, 14);
+			Position = UFO(TextX, 38);
+			Size = UD2(1, TextW, 0, 15);
 			FontFace = FN("rbxassetid://12187365364", FW.Medium, FS.Normal);
 			Text = Content;
 			TextColor3 = T.TextDim or RGB(170, 158, 160);
-			TextSize = 11;
+			TextSize = 12;
 			TextXAlignment = TXA.Left;
 			TextYAlignment = TYA.Center;
 			TextTruncate = ETT.AtEnd;
@@ -3669,7 +3678,7 @@ Library.Notify = function(propertyTable: {})
 	local Close = Add("TextButton", {
 		Parent = Card;
 		AnchorPoint = V2(1, 0);
-		Position = UD2(1, -8, 0, 8);
+		Position = UD2(1, -10, 0, 10);
 		Size = UFO(18, 18);
 		BackgroundColor3 = RGB(255, 255, 255);
 		BackgroundTransparency = 1;
@@ -3686,7 +3695,7 @@ Library.Notify = function(propertyTable: {})
 			Parent = Close;
 			AnchorPoint = V2(0.5, 0.5);
 			Position = UFS(0.5, 0.5);
-			Size = UFO(8, 1);
+			Size = UFO(9, 1);
 			Rotation = Rot;
 			BackgroundColor3 = CrossColor;
 			BorderSizePixel = 0;
@@ -3709,10 +3718,9 @@ Library.Notify = function(propertyTable: {})
 	local BarBG = Add("Frame", {
 		Parent = Card;
 		AnchorPoint = V2(0, 1);
-		Position = UD2(0, 12, 1, -7);
-		Size = UD2(1, -24, 0, 2);
-		BackgroundColor3 = T.Surface or RGB(15, 14, 15);
-		BackgroundTransparency = 0.35;
+		Position = UD2(0, 14, 1, -8);
+		Size = UD2(1, -28, 0, 3);
+		BackgroundColor3 = RGB(52, 50, 51);
 		BorderSizePixel = 0;
 		ZIndex = 5;
 	})
@@ -3720,11 +3728,13 @@ Library.Notify = function(propertyTable: {})
 	local Bar = Add("Frame", {
 		Parent = BarBG;
 		Size = UFS(1, 1);
-		BackgroundColor3 = Accent;
+		BackgroundColor3 = IconColor;
 		BorderSizePixel = 0;
+		ZIndex = 6;
 	})
 	Add("UICorner", { Parent = Bar; CornerRadius = UD(1, 0); })
-	Add("UIGradient", { Parent = Bar; Color = CS{ CSK(0, Accent), CSK(1, AccentBright) }; })
+	Add("UIGradient", { Parent = Bar; Color = CS{ CSK(0, IconColor), CSK(1, IconTint) }; })
+	Add("UIStroke", { Parent = Bar; ApplyStrokeMode = ASM.Border; Color = IconColor; Transparency = 0.55; Thickness = 1; })
 	Tween(Shell, { Position = UFO(0, 0) }, 0.35, ES.Quint)
 	Tween(Card, { GroupTransparency = 0 }, 0.22)
 	Tween(Shadow, { ImageTransparency = 0.7 }, 0.3)
@@ -3741,7 +3751,7 @@ Library.Notify = function(propertyTable: {})
 			end
 		end
 		Slot.ClipsDescendants = true
-		Tween(Shell, { Position = UFO(280 * SlideDir, 0) }, 0.25, ES.Quint)
+		Tween(Shell, { Position = UFO(320 * SlideDir, 0) }, 0.25, ES.Quint)
 		Tween(Card, { GroupTransparency = 1 }, 0.18)
 		Tween(CardStroke, { Transparency = 1 }, 0.12)
 		Tween(Shadow, { ImageTransparency = 1 }, 0.18)
