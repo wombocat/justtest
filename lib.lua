@@ -469,17 +469,17 @@ local function BindSlider(Object: GuiObject, Callback: (Alpha: Vector2) -> ())
 end
 
 local function Tween(Object: Instance, propertyTable: {}, Duration: number?, Style: Enum.EasingStyle?, Direction: Enum.EasingDirection?)
+	local Tween = TweenService:Create(Object, TI(Duration or 0.2, Style or ES.Quad, Direction or ED.Out), propertyTable)
+	Tween:Play()
+
+	return Tween
+end
+
 Library._Scaled = setmetatable({}, { __mode = "k" })
 
 local function Track(Gui: GuiObject)
 	Library._Scaled[Gui] = true
 	Add("UIScale", { Parent = Gui; Scale = Library.UIScale })
-end
-
-	local Tween = TweenService:Create(Object, TI(Duration or 0.2, Style or ES.Quad, Direction or ED.Out), propertyTable)
-	Tween:Play()
-
-	return Tween
 end
 
 local function ClaimPopup(Element: {})
