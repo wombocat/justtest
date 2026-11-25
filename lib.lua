@@ -3507,7 +3507,7 @@ Library.Notify = function(propertyTable: {})
 			Parent = Gui;
 			Name = "Notifications";
 			BackgroundTransparency = 1;
-			Size = UFO(300, 0);
+			Size = UFO(200, 0);
 			AutomaticSize = AS.Y;
 			ZIndex = 200;
 		})
@@ -3518,6 +3518,8 @@ Library.Notify = function(propertyTable: {})
 			HorizontalAlignment = HFA.Right;
 		})
 	end
+
+	Library._NotifyHost.Size = UFO(200, 0)
 
 	local Pos = Library.NotifyPosition or "Top Right"
 	local Layout = Library._NotifyHost:FindFirstChildOfClass("UIListLayout")
@@ -3542,12 +3544,12 @@ Library.Notify = function(propertyTable: {})
 	Library._NotifyOrder = (Library._NotifyOrder or 0) + 1
 
 	local HasBody = Content ~= ""
-	local CardH = HasBody and 74 or 50
+	local CardH = HasBody and 58 or 42
 	local SlideDir = (string.find(Pos, "Left") and -1) or 1
 
 	local Slot = Add("Frame", {
 		Parent = Library._NotifyHost;
-		Size = UD2(1, 0, 0, CardH + 6);
+		Size = UD2(1, 0, 0, CardH + 5);
 		BackgroundTransparency = 1;
 		LayoutOrder = Library._NotifyOrder;
 		ClipsDescendants = false;
@@ -3555,15 +3557,15 @@ Library.Notify = function(propertyTable: {})
 
 	local Shell = Add("Frame", {
 		Parent = Slot;
-		Position = UFO(320 * SlideDir, 0);
+		Position = UFO(210 * SlideDir, 0);
 		Size = UD2(1, 0, 0, CardH);
 		BackgroundTransparency = 1;
 	})
 
 	local Shadow = Add("ImageLabel", {
 		Parent = Shell;
-		Position = UFO(-12, -12);
-		Size = UD2(1, 24, 1, 24);
+		Position = UFO(-8, -8);
+		Size = UD2(1, 16, 1, 16);
 		BackgroundTransparency = 1;
 		Image = "rbxassetid://6014261993";
 		ImageColor3 = RGB(0, 0, 0);
@@ -3589,7 +3591,7 @@ Library.Notify = function(propertyTable: {})
 		GroupTransparency = 1;
 		ZIndex = 1;
 	})
-	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 12); })
+	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 8); })
 	local CardStroke = Add("UIStroke", {
 		Parent = Card;
 		ApplyStrokeMode = ASM.Border;
@@ -3597,24 +3599,22 @@ Library.Notify = function(propertyTable: {})
 		Thickness = 1;
 	})
 
-	local IconSize = 34
-	local IconX = 14
+	local IconSize = 26
+	local IconX = 10
 	local CenterY = math.floor(CardH / 2)
 
-	-- soft glow behind the mark
 	Add("ImageLabel", {
 		Parent = Card;
 		AnchorPoint = V2(0.5, 0.5);
 		Position = UFO(IconX + IconSize / 2, CenterY);
-		Size = UFO(58, 58);
+		Size = UFO(44, 44);
 		BackgroundTransparency = 1;
 		BorderSizePixel = 0;
 		Image = "rbxassetid://8992230677";
 		ImageColor3 = IconColor;
-		ImageTransparency = 0.55;
+		ImageTransparency = 0.6;
 		ZIndex = 2;
 	})
-	-- pentagram mark
 	Add("ImageLabel", {
 		Parent = Card;
 		AnchorPoint = V2(0.5, 0.5);
@@ -3629,29 +3629,28 @@ Library.Notify = function(propertyTable: {})
 		ZIndex = 3;
 	})
 
-	-- thin divider between mark and text
 	Add("Frame", {
 		Parent = Card;
 		AnchorPoint = V2(0, 0.5);
-		Position = UFO(IconX + IconSize + 8, CenterY);
-		Size = UD2(0, 1, 0, HasBody and 32 or 24);
+		Position = UFO(IconX + IconSize + 7, CenterY);
+		Size = UD2(0, 1, 0, HasBody and 26 or 20);
 		BackgroundColor3 = IconColor;
-		BackgroundTransparency = 0.15;
+		BackgroundTransparency = 0.2;
 		BorderSizePixel = 0;
 		ZIndex = 4;
 	})
 
-	local TextX = 70
-	local TextW = -TextX - 34
+	local TextX = 52
+	local TextW = -TextX - 22
 	Add("TextLabel", {
 		Parent = Card;
 		BackgroundTransparency = 1;
-		Position = UFO(TextX, HasBody and 18 or 0);
-		Size = HasBody and UD2(1, TextW, 0, 19) or UD2(1, TextW, 1, 0);
+		Position = UFO(TextX, HasBody and 10 or 0);
+		Size = HasBody and UD2(1, TextW, 0, 15) or UD2(1, TextW, 1, 0);
 		FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal);
 		Text = Props.Title or "Notification";
 		TextColor3 = T.Text or RGB(255, 255, 255);
-		TextSize = 15;
+		TextSize = 12;
 		TextXAlignment = TXA.Left;
 		TextYAlignment = TYA.Center;
 		TextTruncate = ETT.AtEnd;
@@ -3662,12 +3661,12 @@ Library.Notify = function(propertyTable: {})
 		Add("TextLabel", {
 			Parent = Card;
 			BackgroundTransparency = 1;
-			Position = UFO(TextX, 38);
-			Size = UD2(1, TextW, 0, 15);
+			Position = UFO(TextX, 25);
+			Size = UD2(1, TextW, 0, 13);
 			FontFace = FN("rbxassetid://12187365364", FW.Medium, FS.Normal);
 			Text = Content;
 			TextColor3 = T.TextDim or RGB(170, 158, 160);
-			TextSize = 12;
+			TextSize = 10;
 			TextXAlignment = TXA.Left;
 			TextYAlignment = TYA.Center;
 			TextTruncate = ETT.AtEnd;
@@ -3678,8 +3677,8 @@ Library.Notify = function(propertyTable: {})
 	local Close = Add("TextButton", {
 		Parent = Card;
 		AnchorPoint = V2(1, 0);
-		Position = UD2(1, -10, 0, 10);
-		Size = UFO(18, 18);
+		Position = UD2(1, -7, 0, 6);
+		Size = UFO(16, 16);
 		BackgroundColor3 = RGB(255, 255, 255);
 		BackgroundTransparency = 1;
 		BorderSizePixel = 0;
@@ -3687,7 +3686,7 @@ Library.Notify = function(propertyTable: {})
 		Text = "";
 		ZIndex = 6;
 	})
-	Add("UICorner", { Parent = Close; CornerRadius = UD(0, 6); })
+	Add("UICorner", { Parent = Close; CornerRadius = UD(0, 5); })
 	local CrossColor = RGB(150, 138, 140)
 	local CrossBars = {}
 	for _, Rot in ipairs({ 45, -45 }) do
@@ -3695,7 +3694,7 @@ Library.Notify = function(propertyTable: {})
 			Parent = Close;
 			AnchorPoint = V2(0.5, 0.5);
 			Position = UFS(0.5, 0.5);
-			Size = UFO(9, 1);
+			Size = UFO(7, 1);
 			Rotation = Rot;
 			BackgroundColor3 = CrossColor;
 			BorderSizePixel = 0;
@@ -3718,8 +3717,8 @@ Library.Notify = function(propertyTable: {})
 	local BarBG = Add("Frame", {
 		Parent = Card;
 		AnchorPoint = V2(0, 1);
-		Position = UD2(0, 14, 1, -8);
-		Size = UD2(1, -28, 0, 3);
+		Position = UD2(0, 10, 1, -6);
+		Size = UD2(1, -20, 0, 2);
 		BackgroundColor3 = RGB(52, 50, 51);
 		BorderSizePixel = 0;
 		ZIndex = 5;
@@ -3751,7 +3750,7 @@ Library.Notify = function(propertyTable: {})
 			end
 		end
 		Slot.ClipsDescendants = true
-		Tween(Shell, { Position = UFO(320 * SlideDir, 0) }, 0.25, ES.Quint)
+		Tween(Shell, { Position = UFO(210 * SlideDir, 0) }, 0.25, ES.Quint)
 		Tween(Card, { GroupTransparency = 1 }, 0.18)
 		Tween(CardStroke, { Transparency = 1 }, 0.12)
 		Tween(Shadow, { ImageTransparency = 1 }, 0.18)
