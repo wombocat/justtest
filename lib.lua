@@ -3016,7 +3016,9 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 	Track(Frame)
 	Frame.InputBegan:Connect(function(Input)
 		if Input.UserInputType == UIT.MouseButton1 or Input.UserInputType == UIT.Touch then
-			Library.ToggleMenu(true)
+			if not Library.MenuOpen then
+				Library.ToggleMenu(true)
+			end
 		end
 	end)
 	Add("UICorner", { Parent = Frame; CornerRadius = UD(0, 7); })
