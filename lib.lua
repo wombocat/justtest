@@ -3492,13 +3492,13 @@ Library.Notify = function(propertyTable: {})
 	local Duration = Props.Duration or 4
 	local T = Library.Theme
 
-	local TypeColor = T.Text
+	local TypeColor = T.Text or RGB(255, 255, 255)
 	if Props.Type == "Success" then
-		TypeColor = RGB(150, 220, 170)
+		TypeColor = RGB(140, 226, 164)
 	elseif Props.Type == "Warning" or Props.Type == "Warn" then
-		TypeColor = RGB(240, 176, 108)
+		TypeColor = RGB(246, 186, 110)
 	elseif Props.Type == "Error" then
-		TypeColor = RGB(240, 120, 120)
+		TypeColor = RGB(255, 118, 108)
 	end
 
 	local Gui = EnsureOverlayGui()
@@ -3507,7 +3507,7 @@ Library.Notify = function(propertyTable: {})
 			Parent = Gui;
 			Name = "Notifications";
 			BackgroundTransparency = 1;
-			Size = UFO(220, 0);
+			Size = UFO(268, 0);
 			AutomaticSize = AS.Y;
 			ZIndex = 200;
 		})
@@ -3542,7 +3542,7 @@ Library.Notify = function(propertyTable: {})
 	Library._NotifyOrder = (Library._NotifyOrder or 0) + 1
 
 	local HasBody = Content ~= ""
-	local CardH = HasBody and 52 or 36
+	local CardH = HasBody and 66 or 44
 	local SlideDir = (string.find(Pos, "Left") and -1) or 1
 
 	local Slot = Add("Frame", {
@@ -3573,100 +3573,146 @@ Library.Notify = function(propertyTable: {})
 		ZIndex = 0;
 	})
 
+	local Accent = T.Accent or RGB(160, 10, 22)
+	local AccentBright = AccentTint(Accent)
+	local LineColor = T.Border or RGB(36, 37, 37)
+
 	local Card = Add("CanvasGroup", {
 		Parent = Shell;
 		Size = UFS(1, 1);
-		BackgroundColor3 = T.Background or RGB(14, 14, 16);
+		BackgroundColor3 = T.SurfaceAlt or RGB(20, 20, 21);
 		BorderSizePixel = 0;
 		GroupTransparency = 1;
 		ZIndex = 1;
 	})
-	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 8); })
+	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 9); })
 	local CardStroke = Add("UIStroke", {
 		Parent = Card;
 		ApplyStrokeMode = ASM.Border;
-		Color = T.Border or RGB(30, 30, 36);
+		Color = LineColor;
 		Thickness = 1;
 	})
 
-	Add("Frame", {
+	-- thin accent strip down the left edge
+	local Edge = Add("Frame", {
 		Parent = Card;
-		Size = UD2(1, 0, 0, 1);
-		BackgroundColor3 = RGB(255, 255, 255);
-		BackgroundTransparency = 0.93;
+		Size = UD2(0, 2, 1, -18);
+		Position = UD2(0, 0, 0.5, 0);
+		AnchorPoint = V2(0, 0.5);
+		BackgroundColor3 = Accent;
 		BorderSizePixel = 0;
-		ZIndex = 2;
+		ZIndex = 4;
 	})
+	Add("UICorner", { Parent = Edge; CornerRadius = UD(1, 0); })
 
-	local Body = Add("Frame", {
+	-- brand tile with pentagram
+	local TileSize = 34
+	local Tile = Add("Frame", {
 		Parent = Card;
-		Size = UD2(1, 0, 1, -6);
-		BackgroundTransparency = 1;
+		Position = UFO(12, HasBody and 16 or 5);
+		Size = UFO(TileSize, TileSize);
+		BackgroundColor3 = Accent;
+		BackgroundTransparency = 0.85;
+		BorderSizePixel = 0;
 		ZIndex = 3;
 	})
-	Add("UIPadding", {
-		Parent = Body;
-		PaddingLeft = UD(0, 10);
-		PaddingRight = UD(0, 6);
-		PaddingTop = UD(0, 6);
-		PaddingBottom = UD(0, 4);
+	Add("UICorner", { Parent = Tile; CornerRadius = UD(0, 9); })
+	Add("UIStroke", { Parent = Tile; ApplyStrokeMode = ASM.Border; Color = Accent; Transparency = 0.6; Thickness = 1; })
+	Add("ImageLabel", {
+		Parent = Tile;
+		AnchorPoint = V2(0.5, 0.5);
+		Position = UFS(0.5, 0.5);
+		Size = UFO(22, 22);
+		BackgroundTransparency = 1;
+		BorderColor3 = RGB(0, 0, 0);
+		BorderSizePixel = 0;
+		Image = "rbxassetid://131146816502463";
+		ImageColor3 = AccentBright;
+		ScaleType = SCL.Fit;
+		ZIndex = 4;
 	})
 
+	local TextX = 56
+	local TextW = -TextX - 34
 	Add("TextLabel", {
-		Parent = Body;
+		Parent = Card;
 		BackgroundTransparency = 1;
-		Size = UD2(1, -16, 0, 14);
-		FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
+		Position = UFO(TextX, HasBody and 13 or 0);
+		Size = HasBody and UD2(1, TextW, 0, 15) or UD2(1, TextW, 1, 0);
+		FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal);
 		Text = Props.Title or "Notification";
 		TextColor3 = TypeColor;
-		TextSize = 12;
+		TextSize = 13;
 		TextXAlignment = TXA.Left;
+		TextYAlignment = TYA.Center;
 		TextTruncate = ETT.AtEnd;
 		ZIndex = 4;
 	})
 
-	local Close = Add("TextButton", {
-		Parent = Body;
-		AnchorPoint = V2(1, 0);
-		Position = UD2(1, 0, 0, -2);
-		Size = UFO(16, 16);
-		BackgroundTransparency = 1;
-		Text = "x";
-		TextColor3 = RGB(148, 132, 134);
-		TextSize = 12;
-		FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
-		AutoButtonColor = false;
-		ZIndex = 5;
-	})
-	Close.MouseEnter:Connect(function()
-		Tween(Close, { TextColor3 = T.Text }, 0.12)
-	end)
-	Close.MouseLeave:Connect(function()
-		Tween(Close, { TextColor3 = RGB(148, 132, 134) }, 0.15)
-	end)
-
 	if HasBody then
 		Add("TextLabel", {
-			Parent = Body;
+			Parent = Card;
 			BackgroundTransparency = 1;
-			Position = UFO(0, 15);
-			Size = UD2(1, -4, 0, 14);
-			FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
+			Position = UFO(TextX, 30);
+			Size = UD2(1, TextW, 0, 14);
+			FontFace = FN("rbxassetid://12187365364", FW.Medium, FS.Normal);
 			Text = Content;
-			TextColor3 = RGB(166, 144, 146);
+			TextColor3 = T.TextDim or RGB(170, 158, 160);
 			TextSize = 11;
 			TextXAlignment = TXA.Left;
+			TextYAlignment = TYA.Center;
 			TextTruncate = ETT.AtEnd;
 			ZIndex = 4;
 		})
 	end
 
+	local Close = Add("TextButton", {
+		Parent = Card;
+		AnchorPoint = V2(1, 0);
+		Position = UD2(1, -8, 0, 8);
+		Size = UFO(18, 18);
+		BackgroundColor3 = RGB(255, 255, 255);
+		BackgroundTransparency = 1;
+		BorderSizePixel = 0;
+		AutoButtonColor = false;
+		Text = "";
+		ZIndex = 6;
+	})
+	Add("UICorner", { Parent = Close; CornerRadius = UD(0, 6); })
+	local CrossColor = RGB(150, 138, 140)
+	local CrossBars = {}
+	for _, Rot in ipairs({ 45, -45 }) do
+		TIS(CrossBars, Add("Frame", {
+			Parent = Close;
+			AnchorPoint = V2(0.5, 0.5);
+			Position = UFS(0.5, 0.5);
+			Size = UFO(8, 1);
+			Rotation = Rot;
+			BackgroundColor3 = CrossColor;
+			BorderSizePixel = 0;
+			ZIndex = 7;
+		}))
+	end
+	Close.MouseEnter:Connect(function()
+		Tween(Close, { BackgroundTransparency = 0.85 }, 0.12)
+		for _, B in ipairs(CrossBars) do
+			Tween(B, { BackgroundColor3 = T.Text or RGB(255, 255, 255) }, 0.12)
+		end
+	end)
+	Close.MouseLeave:Connect(function()
+		Tween(Close, { BackgroundTransparency = 1 }, 0.15)
+		for _, B in ipairs(CrossBars) do
+			Tween(B, { BackgroundColor3 = CrossColor }, 0.15)
+		end
+	end)
+
 	local BarBG = Add("Frame", {
 		Parent = Card;
 		AnchorPoint = V2(0, 1);
-		Position = UD2(0, 10, 1, -4);
-		Size = UD2(1, -20, 0, 2);
-		BackgroundColor3 = T.SurfaceAlt or RGB(28, 28, 30);
+		Position = UD2(0, 12, 1, -7);
+		Size = UD2(1, -24, 0, 2);
+		BackgroundColor3 = T.Surface or RGB(15, 14, 15);
+		BackgroundTransparency = 0.35;
 		BorderSizePixel = 0;
 		ZIndex = 5;
 	})
@@ -3674,11 +3720,11 @@ Library.Notify = function(propertyTable: {})
 	local Bar = Add("Frame", {
 		Parent = BarBG;
 		Size = UFS(1, 1);
-		BackgroundColor3 = T.Accent;
+		BackgroundColor3 = Accent;
 		BorderSizePixel = 0;
 	})
 	Add("UICorner", { Parent = Bar; CornerRadius = UD(1, 0); })
-
+	Add("UIGradient", { Parent = Bar; Color = CS{ CSK(0, Accent), CSK(1, AccentBright) }; })
 	Tween(Shell, { Position = UFO(0, 0) }, 0.35, ES.Quint)
 	Tween(Card, { GroupTransparency = 0 }, 0.22)
 	Tween(Shadow, { ImageTransparency = 0.7 }, 0.3)
