@@ -3254,7 +3254,7 @@ Library.Notify = function(propertyTable: {})
 end
 
 Library.AskUnload = function()
-	if Library._UnloadPrompt or Library.Unloaded then return end
+	if Library._UnloadPrompt then return end
 	local Win = Library.Windows[1]
 	local Parent = Win and Win.Canvas
 	if not Parent then return end
@@ -3264,8 +3264,8 @@ Library.AskUnload = function()
 	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 6); })
 	Add("UIStroke", { Parent = Card; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Border; })
 	Add("UIShadow", { Parent = Card; BlurRadius = UD(0, 18); Spread = UFO(2, 2); Transparency = 0.8; })
-	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0.5, 0, 0, 19); Size = UFO(230, 20); Text = "Unload UI?"; TextColor3 = RGB(255, 255, 255); TextSize = 16; ZIndex = 502; })
-	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Position = UD2(0.5, 0, 0, 43); Size = UFO(230, 16); Text = "All menu functions will stop"; TextColor3 = RGB(160, 142, 144); TextSize = 13; ZIndex = 502; })
+	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0.5, 0, 0, 19); Size = UFO(230, 20); Text = "Close menu?"; TextColor3 = RGB(255, 255, 255); TextSize = 16; ZIndex = 502; })
+	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Position = UD2(0.5, 0, 0, 43); Size = UFO(230, 16); Text = "Reopen it with the menu key"; TextColor3 = RGB(160, 142, 144); TextSize = 13; ZIndex = 502; })
 
 	local function Btn(Text: string, X: number, On: boolean): TextButton
 		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BorderSizePixel = 0; Position = UFO(X, 76); Size = UFO(115, 38); Text = ""; ZIndex = 502; }) :: TextButton
@@ -3296,47 +3296,11 @@ Library.AskUnload = function()
 	Dim.Activated:Connect(Close)
 	Yes.Activated:Connect(function()
 		Close()
-		Library.Unload()
+		Library.ToggleMenu(false)
 	end)
 end
 
-Library.Unload = function()
-	if Library.Unloaded then return end
-	Library.Unloaded = true
-	Library.MenuOpen = false
-	Library._UnloadPrompt = nil
-	Library.OpenPopup = nil
-	if Library._KeyConn then
-		Library._KeyConn:Disconnect()
-		Library._KeyConn = nil
-	end
-	if Library.Watermark._StatsConn then
-		Library.Watermark._StatsConn:Disconnect()
-		Library.Watermark._StatsConn = nil
-	end
-	for _, S in Library._Sfx do
-		pcall(function() S:Destroy() end)
-	end
-	table.clear(Library._Sfx)
-	if Library._Instance then
-		Library._Instance:Destroy()
-		Library._Instance = nil
-	end
-	if Library._Overlay then
-		Library._Overlay:Destroy()
-		Library._Overlay = nil
-	end
-	table.clear(Library.Windows)
-	table.clear(Library.Notifications)
-	table.clear(Library._Toasts)
-	Library.Watermark.Frame = nil
-	Library.Watermark.Label = nil
-	Library.Watermark.Stats = nil
-	Library.Watermark.Accent = nil
-end
-
 Library.ToggleMenu = function(State: boolean?)
-	if Library.Unloaded then return end
 	if Library._UnloadPrompt then
 		Library._UnloadPrompt()
 	end
@@ -3659,17 +3623,10 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 	})
 	MenuSection:Button({
 		Name = "Hide menu";
-		Width = 0.5;
+		Width = 1;
 		Callback = function()
 			Library.ToggleMenu(false)
 			Library.Notify({ Title = "Cult"; Text = "Menu hidden - press menu key"; Duration = 2 })
-		end;
-	})
-	MenuSection:Button({
-		Name = "Unload";
-		Width = 0.5;
-		Callback = function()
-			Library.Unload()
 		end;
 	})
 
