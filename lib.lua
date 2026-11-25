@@ -3267,11 +3267,12 @@ Library.AskUnload = function()
 	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0.5, 0, 0, 19); Size = UFO(230, 20); Text = "Unload UI?"; TextColor3 = RGB(255, 255, 255); TextSize = 16; ZIndex = 502; })
 	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Position = UD2(0.5, 0, 0, 43); Size = UFO(230, 16); Text = "All menu functions will stop"; TextColor3 = RGB(160, 142, 144); TextSize = 13; ZIndex = 502; })
 
-	local function Btn(Text: string, X: number, Accent: boolean): TextButton
-		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = Accent and Library.Theme.Accent or Library.Theme.SurfaceAlt; BorderSizePixel = 0; Position = UFO(X, 76); Size = UFO(115, 38); Text = Text; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); TextColor3 = RGB(255, 255, 255); TextSize = 15; ZIndex = 502; }) :: TextButton
+	local function Btn(Text: string, X: number, On: boolean): TextButton
+		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = On and RGB(255, 255, 255) or Library.Theme.Background; BorderSizePixel = 0; Position = UFO(X, 76); Size = UFO(115, 38); Text = Text; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); TextColor3 = RGB(255, 255, 255); TextSize = 16; TextTransparency = On and 0 or 0.5; ZIndex = 502; }) :: TextButton
+		Add("UIGradient", { Parent = B; Color = CS{ CSK(0, Library.Theme.AccentDark), CSK(1, Library.Theme.Accent) }; Rotation = -70; })
 		Add("UICorner", { Parent = B; CornerRadius = UD(0, 5); })
-		B.MouseEnter:Connect(function() Tween(B, { BackgroundTransparency = 0.15 }, 0.1) end)
-		B.MouseLeave:Connect(function() Tween(B, { BackgroundTransparency = 0 }, 0.1) end)
+		B.MouseEnter:Connect(function() Tween(B, { BackgroundColor3 = On and RGB(255, 255, 255) or RGB(78, 68, 70); TextTransparency = 0 }, 0.12) end)
+		B.MouseLeave:Connect(function() Tween(B, { BackgroundColor3 = On and RGB(255, 255, 255) or Library.Theme.Background; TextTransparency = On and 0 or 0.5 }, 0.12) end)
 		return B
 	end
 
