@@ -3012,15 +3012,8 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 		Library.Watermark.Frame = nil
 	end
 
-	local Frame = Add("Frame", { Parent = Gui; Name = "Watermark"; AnchorPoint = V2(0.5, 0); Position = UD2(0.5, 0, 0, 12); AutomaticSize = AS.X; Size = UFO(0, 32); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 120; Active = true; Visible = Library.Watermark.Enabled == true })
+	local Frame = Add("Frame", { Parent = Gui; Name = "Watermark"; AnchorPoint = V2(0.5, 0); Position = UD2(0.5, 0, 0, 12); AutomaticSize = AS.X; Size = UFO(0, 32); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 120; Visible = Library.Watermark.Enabled == true })
 	Track(Frame)
-	Frame.InputBegan:Connect(function(Input)
-		if Input.UserInputType == UIT.MouseButton1 or Input.UserInputType == UIT.Touch then
-			if not Library.MenuOpen then
-				Library.ToggleMenu(true)
-			end
-		end
-	end)
 	Add("UICorner", { Parent = Frame; CornerRadius = UD(0, 7); })
 	Add("UIStroke", { Parent = Frame; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Border; })
 	Add("UIShadow", { Parent = Frame; BlurRadius = UD(0, 16); Spread = UFO(4, 4); Transparency = 0.7; })
@@ -3262,26 +3255,28 @@ end
 
 Library.AskUnload = function()
 	if Library._UnloadPrompt or Library.Unloaded then return end
-	local Gui = Library._Instance
-	if not Gui then return end
+	local Win = Library.Windows[1]
+	local Parent = Win and Win.Canvas
+	if not Parent then return end
 
-	local Dim = Add("TextButton", { Parent = Gui; Name = "UnloadPrompt"; AutoButtonColor = false; BackgroundColor3 = RGB(0, 0, 0); BackgroundTransparency = 0.35; BorderSizePixel = 0; Size = UFS(1, 1); Text = ""; ZIndex = 500; }) :: TextButton
-	local Card = Add("Frame", { Parent = Dim; Name = "Card"; Active = true; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(260, 118); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 501; }) :: Frame
-	Track(Card)
+	local Dim = Add("TextButton", { Parent = Parent; Name = "UnloadPrompt"; AutoButtonColor = false; BackgroundColor3 = RGB(0, 0, 0); BackgroundTransparency = 0.4; BorderSizePixel = 0; Size = UFS(1, 1); Text = ""; ZIndex = 500; }) :: TextButton
+	local Card = Add("Frame", { Parent = Dim; Name = "Card"; Active = true; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(270, 132); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 501; }) :: Frame
 	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 6); })
-	Add("UIStroke", { Parent = Card; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Accent; Transparency = 0.6; })
-	Add("UIShadow", { Parent = Card; BlurRadius = UD(0, 18); Spread = UFO(3, 3); Transparency = 0.7; })
-	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0.5, 0, 0, 17); Size = UFO(220, 20); Text = "Unload UI?"; TextColor3 = RGB(255, 255, 255); TextSize = 16; ZIndex = 502; })
-	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Position = UD2(0.5, 0, 0, 41); Size = UFO(220, 16); Text = "All menu functions will stop"; TextColor3 = RGB(160, 142, 144); TextSize = 13; ZIndex = 502; })
+	Add("UIStroke", { Parent = Card; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Border; })
+	Add("UIShadow", { Parent = Card; BlurRadius = UD(0, 18); Spread = UFO(2, 2); Transparency = 0.8; })
+	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0.5, 0, 0, 19); Size = UFO(230, 20); Text = "Unload UI?"; TextColor3 = RGB(255, 255, 255); TextSize = 16; ZIndex = 502; })
+	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Position = UD2(0.5, 0, 0, 43); Size = UFO(230, 16); Text = "All menu functions will stop"; TextColor3 = RGB(160, 142, 144); TextSize = 13; ZIndex = 502; })
 
 	local function Btn(Text: string, X: number, Accent: boolean): TextButton
-		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = Accent and Library.Theme.Accent or Library.Theme.SurfaceAlt; BorderSizePixel = 0; Position = UFO(X, 73); Size = UFO(110, 28); Text = Text; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); TextColor3 = RGB(255, 255, 255); TextSize = 15; ZIndex = 502; }) :: TextButton
+		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = Accent and Library.Theme.Accent or Library.Theme.SurfaceAlt; BorderSizePixel = 0; Position = UFO(X, 76); Size = UFO(115, 38); Text = Text; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); TextColor3 = RGB(255, 255, 255); TextSize = 15; ZIndex = 502; }) :: TextButton
 		Add("UICorner", { Parent = B; CornerRadius = UD(0, 5); })
+		B.MouseEnter:Connect(function() Tween(B, { BackgroundTransparency = 0.15 }, 0.1) end)
+		B.MouseLeave:Connect(function() Tween(B, { BackgroundTransparency = 0 }, 0.1) end)
 		return B
 	end
 
 	local Yes = Btn("Yes", 15, true)
-	local No = Btn("No", 135, false)
+	local No = Btn("No", 140, false)
 
 	local function Close()
 		Library._UnloadPrompt = nil
@@ -3334,6 +3329,9 @@ end
 
 Library.ToggleMenu = function(State: boolean?)
 	if Library.Unloaded then return end
+	if Library._UnloadPrompt then
+		Library._UnloadPrompt()
+	end
 	if State == nil then
 		State = not Library.MenuOpen
 	end
@@ -3378,6 +3376,23 @@ Library._KeyConn = UserInputService.InputBegan:Connect(function(Input, GameProce
 		return
 	end
 	if Library.MenuKey and Input.KeyCode == Library.MenuKey then
+		Library.ToggleMenu()
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(Input: InputObject)
+	if Input.UserInputType ~= UIT.MouseButton1 and Input.UserInputType ~= UIT.Touch then
+		return
+	end
+	local F = Library.Watermark.Frame
+	if not F or not F.Parent or not F.Visible then
+		return
+	end
+	local Inset = Services:GetService("GuiService"):GetGuiInset()
+	local A = F.AbsolutePosition + V2(Inset.X, Inset.Y)
+	local S = F.AbsoluteSize
+	local P = Input.Position
+	if P.X >= A.X and P.X <= A.X + S.X and P.Y >= A.Y and P.Y <= A.Y + S.Y then
 		Library.ToggleMenu()
 	end
 end)
