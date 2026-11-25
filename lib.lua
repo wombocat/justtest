@@ -3371,7 +3371,7 @@ Library.ToggleMenu = function(State: boolean?)
 	end
 end
 
-	Library._KeyConn = UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+Library._KeyConn = UserInputService.InputBegan:Connect(function(Input, GameProcessed)
 	if GameProcessed then
 		return
 	end
