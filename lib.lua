@@ -1896,7 +1896,7 @@ Library.Window = function(self: Library, propertyTable: {})
 	}, propertyTable or {})
 
 	local TitleH = Window.ShowTitleBar and 40 or 0
-	local Canvas = Add("Frame", { Parent = self._Instance; Name = "Canvas"; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFO(658, 461 + TitleH); }) :: Frame
+	local Canvas = Add("CanvasGroup", { Parent = self._Instance; Name = "Canvas"; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFO(658, 461 + TitleH); }) :: CanvasGroup
 	Library.ThemeLink(Canvas, "BackgroundColor3", "Background")
 
 	if TitleH > 0 then
@@ -2366,6 +2366,8 @@ Library.Window = function(self: Library, propertyTable: {})
 		return Page
 	end
 
+	Canvas.GroupTransparency = 1
+	Tween(Canvas, { GroupTransparency = 0 }, 0.22)
 	Library.PlaySound("Menu")
 	return Window
 end
@@ -3236,8 +3238,18 @@ Library.ToggleMenu = function(State: boolean?)
 	if State and not Library.MenuOpen then Library.PlaySound("Menu") end
 	Library.MenuOpen = State
 	for _, Win in Library.Windows do
-		if Win.Canvas then
-			Win.Canvas.Visible = State
+		local C = Win.Canvas
+		if C then
+			if State then
+				C.Visible = true
+				C.GroupTransparency = 1
+				Tween(C, { GroupTransparency = 0 }, 0.2)
+			else
+				Tween(C, { GroupTransparency = 1 }, 0.16)
+				task.delay(0.17, function()
+					if not Library.MenuOpen then C.Visible = false end
+				end)
+			end
 		end
 	end
 	if Library.OpenPopup and Library.OpenPopup.Close then
