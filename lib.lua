@@ -1972,7 +1972,7 @@ Library.Window = function(self: Library, propertyTable: {})
 			end
 		end)
 		cl.Activated:Connect(function()
-			Library.Unload()
+			Library.AskUnload()
 		end)
 		BindDrag(Canvas, TitleBar, true, ctr)
 	end
@@ -3012,8 +3012,13 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 		Library.Watermark.Frame = nil
 	end
 
-	local Frame = Add("Frame", { Parent = Gui; Name = "Watermark"; AnchorPoint = V2(0.5, 0); Position = UD2(0.5, 0, 0, 12); AutomaticSize = AS.X; Size = UFO(0, 32); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 120; Visible = Library.Watermark.Enabled == true })
+	local Frame = Add("Frame", { Parent = Gui; Name = "Watermark"; AnchorPoint = V2(0.5, 0); Position = UD2(0.5, 0, 0, 12); AutomaticSize = AS.X; Size = UFO(0, 32); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 120; Active = true; Visible = Library.Watermark.Enabled == true })
 	Track(Frame)
+	Frame.InputBegan:Connect(function(Input)
+		if Input.UserInputType == UIT.MouseButton1 or Input.UserInputType == UIT.Touch then
+			Library.ToggleMenu(true)
+		end
+	end)
 	Add("UICorner", { Parent = Frame; CornerRadius = UD(0, 7); })
 	Add("UIStroke", { Parent = Frame; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Border; })
 	Add("UIShadow", { Parent = Frame; BlurRadius = UD(0, 16); Spread = UFO(4, 4); Transparency = 0.7; })
@@ -3253,23 +3258,80 @@ Library.Notify = function(propertyTable: {})
 	return { Dismiss = Kill }
 end
 
-Library.Unload = function()
-	Library.ToggleMenu(false)
-	if Library.Watermark.Frame then Library.Watermark.Frame.Visible = false end
-	if Library._NotifyHost then Library._NotifyHost.Visible = false end
-	for _, Win in Library.Windows do
-		if Win.Canvas then
-			Win.Canvas:Destroy()
-		end
+Library.AskUnload = function()
+	if Library._UnloadPrompt or Library.Unloaded then return end
+	local Gui = Library._Instance
+	if not Gui then return end
+
+	local Dim = Add("TextButton", { Parent = Gui; Name = "UnloadPrompt"; AutoButtonColor = false; BackgroundColor3 = RGB(0, 0, 0); BackgroundTransparency = 0.35; BorderSizePixel = 0; Size = UFS(1, 1); Text = ""; ZIndex = 500; }) :: TextButton
+	local Card = Add("Frame", { Parent = Dim; Name = "Card"; Active = true; AnchorPoint = V2(0.5, 0.5); Position = UFS(0.5, 0.5); Size = UFO(260, 118); BackgroundColor3 = Library.Theme.Surface; BorderSizePixel = 0; ZIndex = 501; }) :: Frame
+	Track(Card)
+	Add("UICorner", { Parent = Card; CornerRadius = UD(0, 6); })
+	Add("UIStroke", { Parent = Card; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Accent; Transparency = 0.6; })
+	Add("UIShadow", { Parent = Card; BlurRadius = UD(0, 18); Spread = UFO(3, 3); Transparency = 0.7; })
+	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0.5, 0, 0, 17); Size = UFO(220, 20); Text = "Unload UI?"; TextColor3 = RGB(255, 255, 255); TextSize = 16; ZIndex = 502; })
+	Add("TextLabel", { Parent = Card; AnchorPoint = V2(0.5, 0); BackgroundTransparency = 1; BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Position = UD2(0.5, 0, 0, 41); Size = UFO(220, 16); Text = "All menu functions will stop"; TextColor3 = RGB(160, 142, 144); TextSize = 13; ZIndex = 502; })
+
+	local function Btn(Text: string, X: number, Accent: boolean): TextButton
+		local B = Add("TextButton", { Parent = Card; AutoButtonColor = false; BackgroundColor3 = Accent and Library.Theme.Accent or Library.Theme.SurfaceAlt; BorderSizePixel = 0; Position = UFO(X, 73); Size = UFO(110, 28); Text = Text; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); TextColor3 = RGB(255, 255, 255); TextSize = 15; ZIndex = 502; }) :: TextButton
+		Add("UICorner", { Parent = B; CornerRadius = UD(0, 5); })
+		return B
 	end
-	table.clear(Library.Windows)
+
+	local Yes = Btn("Yes", 15, true)
+	local No = Btn("No", 135, false)
+
+	local function Close()
+		Library._UnloadPrompt = nil
+		Dim:Destroy()
+	end
+
+	Library._UnloadPrompt = Close
+	No.Activated:Connect(Close)
+	Dim.Activated:Connect(Close)
+	Yes.Activated:Connect(function()
+		Close()
+		Library.Unload()
+	end)
+end
+
+Library.Unload = function()
+	if Library.Unloaded then return end
+	Library.Unloaded = true
+	Library.MenuOpen = false
+	Library._UnloadPrompt = nil
+	Library.OpenPopup = nil
+	if Library._KeyConn then
+		Library._KeyConn:Disconnect()
+		Library._KeyConn = nil
+	end
+	if Library.Watermark._StatsConn then
+		Library.Watermark._StatsConn:Disconnect()
+		Library.Watermark._StatsConn = nil
+	end
+	for _, S in Library._Sfx do
+		pcall(function() S:Destroy() end)
+	end
+	table.clear(Library._Sfx)
 	if Library._Instance then
 		Library._Instance:Destroy()
+		Library._Instance = nil
 	end
-	Library.Notify({ Title = "Cult"; Text = "Unloaded"; Duration = 2 })
+	if Library._Overlay then
+		Library._Overlay:Destroy()
+		Library._Overlay = nil
+	end
+	table.clear(Library.Windows)
+	table.clear(Library.Notifications)
+	table.clear(Library._Toasts)
+	Library.Watermark.Frame = nil
+	Library.Watermark.Label = nil
+	Library.Watermark.Stats = nil
+	Library.Watermark.Accent = nil
 end
 
 Library.ToggleMenu = function(State: boolean?)
+	if Library.Unloaded then return end
 	if State == nil then
 		State = not Library.MenuOpen
 	end
@@ -3309,7 +3371,7 @@ Library.ToggleMenu = function(State: boolean?)
 	end
 end
 
-UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+	Library._KeyConn = UserInputService.InputBegan:Connect(function(Input, GameProcessed)
 	if GameProcessed then
 		return
 	end
