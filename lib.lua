@@ -885,7 +885,7 @@ local function SectionBuilder(Container: Frame)
 		Add("ImageLabel", { Parent = Header; Name = "Icon"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = ResolveIcon(Section.Icon); Position = UFS(0, 0.5); Size = UFO(16, 16) })
 		Add("UIListLayout", { Parent = Header; FillDirection = FD.Horizontal; Padding = UD(0, 5); SortOrder = SO.LayoutOrder; VerticalAlignment = VFA.Center })
 		Add("UIPadding", { Parent = Header; PaddingLeft = UD(0, 10); })
-		Add("TextLabel", { Parent = Header; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); LayoutOrder = 1; Text = Section.Name; TextColor3 = RGB(255, 255, 255); TextSize = 14 })
+		Add("TextLabel", { Parent = Header; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); LayoutOrder = 1; Text = Section.Name; TextColor3 = RGB(255, 255, 255); TextSize = 16 })
 		local SectionStroke = Add("UIStroke", { Parent = SectionFrame; ApplyStrokeMode = ASM.Border; Color = Library.Theme.SectionBorder; Thickness = 1; })
 		Library.ThemeLink(SectionFrame, "BackgroundColor3", "Surface")
 		Library.ThemeLink(SectionStroke, "Color", "SectionBorder")
@@ -1028,7 +1028,7 @@ Library.Elements.Label = function(self: Library, propertyTable: {})
 	local LabelFrame = Add("Frame", { Parent = self.Content; Name = "LabelFrame";BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(1, 0, 0, 14); }) :: Frame
 	local LeftContent = Add("Frame", { Parent = LabelFrame; Name = "LeftContent"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; }) :: Frame
 	local RightContent = Add("Frame", { Parent = LabelFrame; Name = "RightContent"; AnchorPoint = V2(1, 0); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFS(1, 0); }) :: Frame
-	Add("TextLabel", { LayoutOrder = 99; Parent = LeftContent; Name = "Label"; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UD2(0, 38, 0.5, 0); Size = UFO(0, 9); Text = Label.Text; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; })
+	Add("TextLabel", { LayoutOrder = 99; Parent = LeftContent; Name = "Label"; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0, 38, 0.5, 0); Size = UFO(0, 9); Text = Label.Text; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.2; })
 	Add("UIListLayout", { Parent = LeftContent; FillDirection = FD.Horizontal; Padding = UD(0, 10); SortOrder = SO.LayoutOrder; VerticalAlignment = VFA.Center; })
 	Add("UIListLayout", { Parent = RightContent; FillDirection = FD.Horizontal; HorizontalAlignment = HFA.Right; Padding = UD(0, 5); SortOrder = SO.LayoutOrder; VerticalAlignment = VFA.Center; })
 
@@ -1053,11 +1053,11 @@ Library.Elements.Slider = function(self: Library, propertyTable: {})
 	local Decimals = MM(#(tostring(Slider.Increment):match("%.(%d+)") or ""), 4)
 
 	local SliderFrame = Add("Frame", { Parent = self.Content; Name = "SliderFrame"; AutomaticSize = AS.Y; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 0); }) :: Frame
-	local Button = Add("TextButton", { Parent = SliderFrame; Name = "Button"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Position = UFO(0, 18); Size = UD2(1, 0, 0, 12); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
+	local Button = Add("TextButton", { Parent = SliderFrame; Name = "Button"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Position = UFO(0, 18); Size = UD2(1, 0, 0, 12); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 16; }) :: TextButton
 	local Overlay = Add("Frame", { Parent = Button; Name = "Overlay"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(0, 0, 1, 0); }) :: Frame
 	local Circle = Add("Frame", { Parent = Button; Name = "Circle"; AnchorPoint = V2(1, 0.5); BackgroundColor3 = RGB(0, 0, 0); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UD2(1, -3, 0.5, 0); Size = UFO(8, 8); }) :: Frame
-	Add("TextLabel", { Parent = SliderFrame; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFO(0, 9); Text = Slider.Name; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; })
-	local Amount = Add("TextLabel", { Parent = SliderFrame; Name = "Amount"; AnchorPoint = V2(1, 0); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UFS(1, 0); Size = UFO(0, 9); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 13; }) :: TextLabel
+	Add("TextLabel", { Parent = SliderFrame; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFO(0, 9); Text = Slider.Name; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.2; })
+	local Amount = Add("TextLabel", { Parent = SliderFrame; Name = "Amount"; AnchorPoint = V2(1, 0); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UFS(1, 0); Size = UFO(0, 9); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 15; }) :: TextLabel
 	Add("UICorner", { Parent = Button; CornerRadius = UD(0, 5); })
 	local SliderGrad = Add("UIGradient", { Parent = Overlay; Color = CS{ CSK(0, Library.Theme.AccentDark), CSK(1, Library.Theme.Accent) }; Rotation = -90; })
 	Library.ThemeLink(SliderGrad, "Gradient", "AccentDark", "Accent")
@@ -1114,11 +1114,11 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 
 	local ButtonFrame = Add("Frame", { Parent = self.Content; Name = "ButtonFrame"; Active = true; AutomaticSize = AS.Y; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 0); }) :: Frame
 	local InputFrame = Add("Frame", { Parent = ButtonFrame; Name = "InputFrame"; Active = true; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, 18); Selectable = true; Size = UD2(1, 0, 0, 22); }) :: Frame
-	Add("TextLabel", { Parent = ButtonFrame; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFO(0, 9); Text = Dropdown.Name; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; })
+	Add("TextLabel", { Parent = ButtonFrame; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFO(0, 9); Text = Dropdown.Name; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.2; })
 	Add("UICorner", { Parent = InputFrame; CornerRadius = UD(0, 5); })
 	Add("UIPadding", { Parent = InputFrame; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
 	local Icon = Add("ImageLabel", { Parent = InputFrame; Name = "Icon"; AnchorPoint = V2(1, 0.5); BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://95865107607162"; ImageTransparency = 0.2; Position = UFS(1, 0.5); ResampleMode = Enum.ResamplerMode.Pixelated; ScaleType = SCL.Fit; Size = UFO(14, 14); }) :: ImageLabel
-	local InputText = Add("TextButton", { Parent = InputFrame; Name = "Input"; BackgroundColor3 = RGB(20, 20, 21); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UD2(1, -24, 1, 0); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; TextTruncate = ETT.SplitWord; TextXAlignment = TXA.Left; }) :: TextButton
+	local InputText = Add("TextButton", { Parent = InputFrame; Name = "Input"; BackgroundColor3 = RGB(20, 20, 21); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UD2(1, -24, 1, 0); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.2; TextTruncate = ETT.SplitWord; TextXAlignment = TXA.Left; }) :: TextButton
 
 	local Buttons = {}
 
@@ -1168,7 +1168,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 
 	local SearchBoxDrop = nil
 	if Dropdown.Search then
-		SearchBoxDrop = Add("TextBox", { Parent = OptionList; Name = "SearchBox"; BackgroundColor3 = RGB(20, 20, 21); BorderSizePixel = 0; ClearTextOnFocus = false; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); PlaceholderText = "Search…"; PlaceholderColor3 = RGB(255, 255, 255); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; TextXAlignment = TXA.Left; Size = UD2(1, 0, 0, 26); LayoutOrder = -1 })
+		SearchBoxDrop = Add("TextBox", { Parent = OptionList; Name = "SearchBox"; BackgroundColor3 = RGB(20, 20, 21); BorderSizePixel = 0; ClearTextOnFocus = false; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); PlaceholderText = "Search…"; PlaceholderColor3 = RGB(255, 255, 255); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.2; TextXAlignment = TXA.Left; Size = UD2(1, 0, 0, 26); LayoutOrder = -1 })
 		Add("UIPadding", { Parent = SearchBoxDrop; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
 		Add("UICorner", { Parent = SearchBoxDrop; CornerRadius = UD(0, 5); })
 		SearchBoxDrop:GetPropertyChangedSignal("Text"):Connect(function()
@@ -1192,7 +1192,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 		end
 
 		for Index, Option in VisibleOptions do
-			local Button = Add("TextButton", { Parent = OptionList; Name = Option; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); LayoutOrder = Index; Size = UD2(1, 0, 0, 22); Text = Option; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.5; TextWrapped = true; TextXAlignment = TXA.Left; }) :: TextButton
+			local Button = Add("TextButton", { Parent = OptionList; Name = Option; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); LayoutOrder = Index; Size = UD2(1, 0, 0, 22); Text = Option; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.5; TextWrapped = true; TextXAlignment = TXA.Left; }) :: TextButton
 			Add("UIPadding", { Parent = Button; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
 
 			local First = Index == 1
@@ -1353,8 +1353,8 @@ Library.Elements.Input = function(self: Library, propertyTable: {})
 
 	local TextBox = Add("Frame", { Parent = self.Content; Name = "TextBox"; AutomaticSize = AS.Y; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 0); }) :: Frame
 	local InputFrame = Add("Frame", { Parent = TextBox; Name = "InputFrame"; Active = true; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, 18); Selectable = true; Size = UD2(1, 0, 0, 22); }) :: Frame
-	Add("TextLabel", { Parent = TextBox; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFO(0, 9); Text = Input.Name; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; })
-	local Box = Add("TextBox", { Parent = InputFrame; Name = "Input"; BackgroundColor3 = RGB(20, 20, 21); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; ClearTextOnFocus = false; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); PlaceholderColor3 = RGB(255, 255, 255); PlaceholderText = Input.Placeholder; Size = UD2(1, -24, 1, 0); Text = Input.Value; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; TextTruncate = ETT.SplitWord; TextXAlignment = TXA.Left; }) :: TextBox
+	Add("TextLabel", { Parent = TextBox; Name = "Title"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFO(0, 9); Text = Input.Name; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.2; })
+	local Box = Add("TextBox", { Parent = InputFrame; Name = "Input"; BackgroundColor3 = RGB(20, 20, 21); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; ClearTextOnFocus = false; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); PlaceholderColor3 = RGB(255, 255, 255); PlaceholderText = Input.Placeholder; Size = UD2(1, -24, 1, 0); Text = Input.Value; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.2; TextTruncate = ETT.SplitWord; TextXAlignment = TXA.Left; }) :: TextBox
 	Add("ImageLabel", { Parent = InputFrame; Name = "Icon"; AnchorPoint = V2(1, 0.5); BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://96386750273341"; ImageTransparency = 0.2; Position = UFS(1, 0.5); ResampleMode = Enum.ResamplerMode.Pixelated; Size = UFO(14, 14); })
 	Add("UIPadding", { Parent = InputFrame; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
 	Add("UICorner", { Parent = InputFrame; CornerRadius = UD(0, 5); })
@@ -1420,7 +1420,7 @@ Library.Elements.Button = function(self: Library, propertyTable: {})
 		Frame.Size = UD2(1, 0, 0, Button.Height)
 	end
 
-	local Click = Add("TextButton", { Parent = Frame; Name = "Click"; AutoButtonColor = false; BackgroundColor3 = RGB(22, 22, 24); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = Button.Name; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.12 })
+	local Click = Add("TextButton", { Parent = Frame; Name = "Click"; AutoButtonColor = false; BackgroundColor3 = RGB(22, 22, 24); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = Button.Name; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.12 })
 	Add("UICorner", { Parent = Click; CornerRadius = UD(0, 6); })
 	local BtnStroke = Add("UIStroke", { Parent = Click; ApplyStrokeMode = ASM.Border; Color = Library.Theme.Border; })
 	Library.ThemeLink(BtnStroke, "Color", "Border")
@@ -1464,9 +1464,9 @@ Library.Elements.Paragraph = function(self: Library, propertyTable: {})
 
 	local Frame = Add("Frame", { Parent = self.Content; Name = "Paragraph"; AutomaticSize = AS.Y; BackgroundTransparency = 1; BorderSizePixel = 0; Size = UFS(1, 0) })
 	if Paragraph.Title ~= "" then
-		Add("TextLabel", { Parent = Frame; BackgroundTransparency = 1; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UD2(1, 0, 0, 16); Text = Paragraph.Title; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.15; TextXAlignment = TXA.Left })
+		Add("TextLabel", { Parent = Frame; BackgroundTransparency = 1; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UD2(1, 0, 0, 16); Text = Paragraph.Title; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.15; TextXAlignment = TXA.Left })
 	end
-	local Body = Add("TextLabel", { Parent = Frame; BackgroundTransparency = 1; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = Paragraph.Title ~= "" and UFO(0, 18) or UFO(0, 0); AutomaticSize = AS.Y; Size = UD2(1, 0, 0, 0); Text = Paragraph.Body; TextColor3 = RGB(255, 255, 255); TextSize = 12; TextTransparency = 0.45; TextWrapped = true; TextXAlignment = TXA.Left; TextYAlignment = TYA.Top })
+	local Body = Add("TextLabel", { Parent = Frame; BackgroundTransparency = 1; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = Paragraph.Title ~= "" and UFO(0, 18) or UFO(0, 0); AutomaticSize = AS.Y; Size = UD2(1, 0, 0, 0); Text = Paragraph.Body; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.45; TextWrapped = true; TextXAlignment = TXA.Left; TextYAlignment = TYA.Top })
 	Paragraph.Frame = Frame
 	Paragraph.SetBody = function(Text: string)
 		Paragraph.Body = Text
@@ -1486,7 +1486,7 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 		Callback = function() end
 	}, propertyTable or {})
 
-	local Button = Add("TextButton", { Parent = self.LeftContent; Name = "Toggle"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Size = UFO(28, 14); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
+	local Button = Add("TextButton", { Parent = self.LeftContent; Name = "Toggle"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Size = UFO(28, 14); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 16; }) :: TextButton
 	local Indicator = Add("Frame", { Parent = Button; Name = "Indicator"; AnchorPoint = V2(1, 0.5); BackgroundColor3 = RGB(0, 0, 0); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UD2(1, -3, 0.5, 0); Size = UFO(10, 10); ZIndex = 2; }) :: Frame
 	local Overlay = Add("Frame", { Parent = Button; Name = "Overlay"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 1); }) :: Frame
 	Add("UICorner", { Parent = Button; CornerRadius = UD(0, 6); })
@@ -1557,10 +1557,10 @@ Library.SubElements.Keybind = function(self: Library, propertyTable: {})
 	Add("TextButton", { Parent = Popup; Name = "Catcher"; AutoButtonColor = false; BackgroundTransparency = 1; BorderSizePixel = 0; Size = UFS(1, 1); Text = ""; })
 	local Header = Add("Frame", { Parent = Popup; Name = "Header"; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(1, 0, 0, 35); }) :: Frame
 	local Page = Add("Frame", { Parent = Popup; Name = "Page"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, 35); Size = UD2(1, 0, 1, -35); }) :: Frame
-	local KeyButton = Add("TextButton", { Parent = Page; Name = "KeyButton"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UD2(1, 0, 0, 25); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.5; }) :: TextButton
+	local KeyButton = Add("TextButton", { Parent = Page; Name = "KeyButton"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UD2(1, 0, 0, 25); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.5; }) :: TextButton
 	local Options = Add("Frame", { Parent = Page; Name = "Options"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, 35); Size = UD2(1, 0, 1, -35); }) :: Frame
-	local HoldButton = Add("TextButton", { Parent = Options; Name = "HoldButton"; AutoButtonColor = false; AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Size = UFS(0, 1); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
-	local ToggleButton = Add("TextButton", { Parent = Options; Name = "ToggleButton"; AutoButtonColor = false; AutomaticSize = AS.X; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Size = UFS(0, 1); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
+	local HoldButton = Add("TextButton", { Parent = Options; Name = "HoldButton"; AutoButtonColor = false; AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Size = UFS(0, 1); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 16; }) :: TextButton
+	local ToggleButton = Add("TextButton", { Parent = Options; Name = "ToggleButton"; AutoButtonColor = false; AutomaticSize = AS.X; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Size = UFS(0, 1); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 16; }) :: TextButton
 	Add("UICorner", { Parent = Popup; CornerRadius = UD(0, 5); })
 	Add("UIStroke", { Parent = Popup; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UIShadow", { Parent = Popup; BlurRadius = UD(0, 20); Spread = UFO(5, 5); Transparency = 0.65; })
@@ -1568,18 +1568,18 @@ Library.SubElements.Keybind = function(self: Library, propertyTable: {})
 	Add("UIStroke", { Parent = Header; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UIPadding", { Parent = Header; PaddingBottom = UD(0, 10); PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); PaddingTop = UD(0, 10); })
 	Add("UIListLayout", { Parent = Header; FillDirection = FD.Horizontal; HorizontalFlex = UFA.SpaceBetween; SortOrder = SO.LayoutOrder; VerticalAlignment = VFA.Center; })
-	Add("TextLabel", { Parent = Header; Name = "Label"; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UD2(0, 38, 0.5, 0); Size = UFO(0, 9); Text = Keybind.Title ~= "" and Keybind.Title or self.Text; TextColor3 = RGB(255, 255, 255); TextSize = 13; })
+	Add("TextLabel", { Parent = Header; Name = "Label"; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0, 38, 0.5, 0); Size = UFO(0, 9); Text = Keybind.Title ~= "" and Keybind.Title or self.Text; TextColor3 = RGB(255, 255, 255); TextSize = 15; })
 	local CloseButton = Add("ImageButton", { Parent = Header; Name = "CloseButton"; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://76308464050634"; Size = UFO(15, 15); }) :: ImageButton
 	Add("UIStroke", { Parent = KeyButton; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UICorner", { Parent = KeyButton; CornerRadius = UD(0, 5); })
 	Add("UIPadding", { Parent = Page; PaddingBottom = UD(0, 12); PaddingLeft = UD(0, 12); PaddingRight = UD(0, 12); PaddingTop = UD(0, 12); })
 	Add("UIListLayout", { Parent = Options; FillDirection = FD.Horizontal; HorizontalAlignment = HFA.Center; HorizontalFlex = UFA.Fill; Padding = UD(0, 10); SortOrder = SO.LayoutOrder; VerticalAlignment = VFA.Center; })
-	local HoldLabel = Add("TextLabel", { Parent = HoldButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = "Hold"; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextLabel
+	local HoldLabel = Add("TextLabel", { Parent = HoldButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = "Hold"; TextColor3 = RGB(0, 0, 0); TextSize = 16; }) :: TextLabel
 	Add("UIPadding", { Parent = HoldButton; PaddingLeft = UD(0, 14); PaddingRight = UD(0, 14); })
 	Add("UICorner", { Parent = HoldButton; CornerRadius = UD(0, 5); })
 	local HoldGradient = Add("UIGradient", { Parent = HoldButton; Color = CS{ CSK(0, RGB(64, 4, 10)), CSK(1, RGB(160, 10, 22)) }; Rotation = -90; }) :: UIGradient
 	local ToggleGradient = Add("UIGradient", { Parent = ToggleButton; Color = CS{ CSK(0, RGB(64, 4, 10)), CSK(1, RGB(160, 10, 22)) }; Enabled = false; Rotation = -90; }) :: UIGradient
-	local ToggleLabel = Add("TextLabel", { Parent = ToggleButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = "Toggle"; TextColor3 = RGB(255, 255, 255); TextSize = 14; TextTransparency = 0.5; }) :: TextLabel
+	local ToggleLabel = Add("TextLabel", { Parent = ToggleButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = "Toggle"; TextColor3 = RGB(255, 255, 255); TextSize = 16; TextTransparency = 0.5; }) :: TextLabel
 	Add("UIPadding", { Parent = ToggleButton; PaddingLeft = UD(0, 14); PaddingRight = UD(0, 14); })
 	Add("UICorner", { Parent = ToggleButton; CornerRadius = UD(0, 5); })
 
@@ -1746,7 +1746,7 @@ Library.SubElements.Colorpicker = function(self: Library, propertyTable: {})
 
 	local Hue, Saturation, Value = Colorpicker.Color:ToHSV()
 
-	local Button = Add("TextButton", { Parent = self.RightContent; Name = "Button"; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Size = UFO(15, 15); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
+	local Button = Add("TextButton", { Parent = self.RightContent; Name = "Button"; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Size = UFO(15, 15); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 16; }) :: TextButton
 	Add("UICorner", { Parent = Button; CornerRadius = UD(0, 7); })
 	Add("UIGradient", { Parent = Button; Color = CS{ CSK(0, RGB(163, 163, 163)), CSK(1, RGB(255, 255, 255)) }; Rotation = -90; })
 
@@ -1762,7 +1762,7 @@ Library.SubElements.Colorpicker = function(self: Library, propertyTable: {})
 	local Page = Add("Frame", { Parent = ColorpickerFrame; Name = "Page"; AutomaticSize = AS.Y; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, 35); Size = UD2(1, 0, 0, 0); }) :: Frame
 	local SaturationBox = Add("Frame", { Parent = Page; Name = "SaturationBox"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(1, 0, 0, 175); }) :: Frame
 	local ValueOverlay = Add("Frame", { Parent = SaturationBox; Name = "ValueOverlay"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 1); }) :: Frame
-	local SaturationCursor = Add("TextButton", { Parent = SaturationBox; Name = "SaturationCursor"; AnchorPoint = V2(0.5, 0.5); AutoButtonColor = false; BackgroundColor3 = RGB(255, 0, 0); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Position = UFS(1, 0); Size = UFO(10, 10); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
+	local SaturationCursor = Add("TextButton", { Parent = SaturationBox; Name = "SaturationCursor"; AnchorPoint = V2(0.5, 0.5); AutoButtonColor = false; BackgroundColor3 = RGB(255, 0, 0); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Position = UFS(1, 0); Size = UFO(10, 10); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 16; }) :: TextButton
 	local HueSlider = Add("Frame", { Parent = Page; Name = "HueSlider"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(1, 0, 0, 12); }) :: Frame
 	local HueCursor = Add("Frame", { Parent = HueSlider; Name = "HueCursor"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(0, -2); Size = UD2(0, 10, 1, 4); }) :: Frame
 	local AlphaSlider = Add("Frame", { Parent = Page; Name = "AlphaSlider"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UD2(1, 0, 0, 12); }) :: Frame
@@ -1774,7 +1774,7 @@ Library.SubElements.Colorpicker = function(self: Library, propertyTable: {})
 	Add("UIStroke", { Parent = Header; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UIPadding", { Parent = Header; PaddingBottom = UD(0, 10); PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); PaddingTop = UD(0, 10); })
 	Add("UIListLayout", { Parent = Header; FillDirection = FD.Horizontal; HorizontalFlex = UFA.SpaceBetween; SortOrder = SO.LayoutOrder; VerticalAlignment = VFA.Center; })
-	Add("TextLabel", { Parent = Header; Name = "Label"; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UD2(0, 38, 0.5, 0); Size = UFO(0, 9); Text = Colorpicker.Title ~= "" and Colorpicker.Title or self.Text; TextColor3 = RGB(255, 255, 255); TextSize = 13; })
+	Add("TextLabel", { Parent = Header; Name = "Label"; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UD2(0, 38, 0.5, 0); Size = UFO(0, 9); Text = Colorpicker.Title ~= "" and Colorpicker.Title or self.Text; TextColor3 = RGB(255, 255, 255); TextSize = 15; })
 	local CloseButton = Add("ImageButton", { Parent = Header; Name = "CloseButton"; AutoButtonColor = false; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://76308464050634"; Size = UFO(15, 15); }) :: ImageButton
 	Add("UIPadding", { Parent = Page; PaddingBottom = UD(0, 12); PaddingLeft = UD(0, 12); PaddingRight = UD(0, 12); PaddingTop = UD(0, 12); })
 	Add("UICorner", { Parent = SaturationBox; CornerRadius = UD(0, 5); })
@@ -1917,10 +1917,10 @@ Library.Window = function(self: Library, propertyTable: {})
 		local br = Add("Frame", { Parent = TitleBar; Name = "Brand"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(0, 0.5); Position = UD2(0, 12, 0.5, 0); Size = UFO(112, 28); ZIndex = 5; }) :: Frame
 		local logo = Add("ImageLabel", { Parent = br; Name = "Logo"; AnchorPoint = V2(0, 0.5); Position = UD2(0, 0, 0.5, 0); Size = UFO(30, 30); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Image = "rbxassetid://131146816502463"; ImageColor3 = Tint(Library.Theme.Accent); ScaleType = SCL.Fit; ZIndex = 6; }) :: ImageLabel
 		local sub = type(Window.Subtitle) == "string" and Window.Subtitle ~= ""
-		local bname = Add("TextLabel", { Parent = br; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 0); Size = sub and UD2(1, -40, 0, 16) or UD2(1, -40, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = sub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+		local bname = Add("TextLabel", { Parent = br; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 0); Size = sub and UD2(1, -40, 0, 16) or UD2(1, -40, 1, 0); FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Bold, FS.Normal); Text = (Window.Title ~= "" and Window.Title) or "Cult"; TextColor3 = Library.Theme.Text; TextSize = sub and 14 or 20; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
 		Library.ThemeLink(bname, "TextColor3", "Text")
 		if sub then
-			local bsub = Add("TextLabel", { Parent = br; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 16); Size = UD2(1, -40, 0, 11); FontFace = FN("rbxassetid://12187365364", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 10; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
+			local bsub = Add("TextLabel", { Parent = br; BackgroundTransparency = 1; BorderSizePixel = 0; Position = UD2(0, 40, 0, 16); Size = UD2(1, -40, 0, 11); FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Text = Window.Subtitle; TextColor3 = Library.Theme.TextDim; TextSize = 11; TextTransparency = 0.15; TextTruncate = ETT.AtEnd; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; ZIndex = 6; }) :: TextLabel
 			Library.ThemeLink(bsub, "TextColor3", "TextDim")
 		end
 		local ctr = Add("Frame", { Parent = TitleBar; Name = "Controls"; BackgroundTransparency = 1; BorderSizePixel = 0; AnchorPoint = V2(1, 0.5); Position = UD2(1, -10, 0.5, 0); Size = UFO(80, 24); ZIndex = 5; }) :: Frame
@@ -2042,7 +2042,7 @@ Library.Window = function(self: Library, propertyTable: {})
 	local Pages = Add("Frame", { Parent = Canvas; Name = "Pages"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UFO(75, TitleH + 50); Size = UD2(1, -75, 1, -(TitleH + 75)); }) :: Frame
 	local Footer = Add("Frame", { Parent = Canvas; Name = "Footer"; AnchorPoint = V2(0, 1); BackgroundColor3 = Library.Theme.Surface; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UD2(0, 75, 1, 0); Size = UD2(1, -75, 0, 25); }) :: Frame
 	Library.ThemeLink(Footer, "BackgroundColor3", "Surface")
-	local SearchBox = Add("TextBox", { Parent = Search; Name = "TextLabel"; Active = false; AutomaticSize = AS.X; ClearTextOnFocus = false; LayoutOrder = 1; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); PlaceholderColor3 = RGB(255, 255, 255); PlaceholderText = "Search function"; Selectable = false; Size = UFS(0, 1); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 14; TextTransparency = 0.5; }) :: TextBox
+	local SearchBox = Add("TextBox", { Parent = Search; Name = "TextLabel"; Active = false; AutomaticSize = AS.X; ClearTextOnFocus = false; LayoutOrder = 1; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); PlaceholderColor3 = RGB(255, 255, 255); PlaceholderText = "Search function"; Selectable = false; Size = UFS(0, 1); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 16; TextTransparency = 0.5; }) :: TextBox
 	Add("UIStroke", { Parent = Canvas; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UICorner", { Parent = Canvas; CornerRadius = UD(0, 5); })
 	Add("UICorner", { Parent = Sidebar; BottomLeftRadius = UD(0, 5); BottomRightRadius = UD(0, 0); TopLeftRadius = UD(0, TitleH > 0 and 0 or 5); TopRightRadius = UD(0, 0); })
@@ -2061,8 +2061,8 @@ Library.Window = function(self: Library, propertyTable: {})
 	Add("UICorner", { Parent = Footer; BottomLeftRadius = UD(0, 0); BottomRightRadius = UD(0, 5); TopLeftRadius = UD(0, 0); TopRightRadius = UD(0, 0); })
 	Add("UIStroke", { Parent = Footer; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); })
 	Add("UIPadding", { Parent = Footer; PaddingBottom = UD(0, 0); PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); PaddingTop = UD(0, 0); })
-	Add("TextLabel", { Parent = Footer; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UFS(0, 0.5); Size = UFO(0, 13); Text = Window.Title; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.5; })
-	Add("TextLabel", { Parent = Footer; AnchorPoint = V2(1, 0.5); AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Position = UFS(1, 0.5); Size = UFO(0, 13); Text = Window.Footer; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.5; })
+	Add("TextLabel", { Parent = Footer; AnchorPoint = V2(0, 0.5); AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UFS(0, 0.5); Size = UFO(0, 13); Text = Window.Title; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.5; })
+	Add("TextLabel", { Parent = Footer; AnchorPoint = V2(1, 0.5); AutomaticSize = AS.X; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Position = UFS(1, 0.5); Size = UFO(0, 13); Text = Window.Footer; TextColor3 = RGB(255, 255, 255); TextSize = 15; TextTransparency = 0.5; })
 	BindDrag(Canvas, Header, true, Search)
 
 	Window.Canvas = Canvas
@@ -2318,10 +2318,10 @@ Library.Window = function(self: Library, propertyTable: {})
 				Name = "",
 			}, propertyTable or {})
 
-			local SubPageButton = Add("TextButton", { Parent = SubPages; Name = "SubPageButton"; AutoButtonColor = false; AutomaticSize = AS.X; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Size = UFS(0, 1); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; Visible = Page.Opened; }) :: TextButton
+			local SubPageButton = Add("TextButton", { Parent = SubPages; Name = "SubPageButton"; AutoButtonColor = false; AutomaticSize = AS.X; BackgroundColor3 = Library.Theme.Background; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Regular, FS.Normal); Size = UFS(0, 1); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 16; Visible = Page.Opened; }) :: TextButton
 			local SubGrad = Add("UIGradient", { Parent = SubPageButton; Color = CS{ CSK(0, Library.Theme.AccentDark), CSK(1, Library.Theme.Accent) }; Rotation = -70; })
 			Library.ThemeLink(SubGrad, "Gradient", "AccentDark", "Accent")
-			local SubPageLabel = Add("TextLabel", { Parent = SubPageButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = SubPage.Name; TextColor3 = RGB(255, 255, 255); TextSize = 14; TextTransparency = 0.5; }) :: TextLabel
+			local SubPageLabel = Add("TextLabel", { Parent = SubPageButton; Name = "Label"; AutomaticSize = AS.XY; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Size = UFS(1, 1); Text = SubPage.Name; TextColor3 = RGB(255, 255, 255); TextSize = 16; TextTransparency = 0.5; }) :: TextLabel
 			Add("UIPadding", { Parent = SubPageButton; PaddingLeft = UD(0, 14); PaddingRight = UD(0, 14); })
 			Add("UICorner", { Parent = SubPageButton; CornerRadius = UD(0, 5); })
 
@@ -3023,7 +3023,7 @@ Library.SetWatermark = function(Text: string?, Enabled: boolean?)
 	local Logo = Add("ImageLabel", { Parent = Frame; Name = "Logo"; BackgroundTransparency = 1; BorderSizePixel = 0; Image = "rbxassetid://131146816502463"; ImageColor3 = Tint(Library.Theme.Accent); ScaleType = SCL.Fit; Size = UFO(20, 20); LayoutOrder = 0; })
 
 	local function Chip(Text: string, Order: number, Dim: boolean?): TextLabel
-		return Add("TextLabel", { Parent = Frame; BackgroundTransparency = 1; AutomaticSize = AS.X; Size = UFO(0, 32); FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Text = Text; TextColor3 = Dim and RGB(160, 142, 144) or RGB(240, 226, 228); TextSize = 12; LayoutOrder = Order })
+		return Add("TextLabel", { Parent = Frame; BackgroundTransparency = 1; AutomaticSize = AS.X; Size = UFO(0, 32); FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Text = Text; TextColor3 = Dim and RGB(160, 142, 144) or RGB(240, 226, 228); TextSize = 13; LayoutOrder = Order })
 	end
 
 	local function Sep(Order: number)
@@ -3197,9 +3197,9 @@ Library.Notify = function(propertyTable: {})
 	Add("Frame", { Parent = card; AnchorPoint = V2(0, 0.5); Position = UFO(ix + isz + 7, cy); Size = UD2(0, 1, 0, body and 26 or 20); BackgroundColor3 = ic; BackgroundTransparency = 0.2; BorderSizePixel = 0; ZIndex = 4 })
 	local tx = 52
 	local tw = -tx - 22
-	Add("TextLabel", { Parent = card; BackgroundTransparency = 1; Position = UFO(tx, body and 10 or 0); Size = body and UD2(1, tw, 0, 15) or UD2(1, tw, 1, 0); FontFace = FN("rbxassetid://12187365364", FW.Bold, FS.Normal); Text = p.Title or "Notification"; TextColor3 = th.Text or RGB(255, 255, 255); TextSize = 12; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; TextTruncate = ETT.AtEnd; ZIndex = 4 })
+	Add("TextLabel", { Parent = card; BackgroundTransparency = 1; Position = UFO(tx, body and 10 or 0); Size = body and UD2(1, tw, 0, 15) or UD2(1, tw, 1, 0); FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Bold, FS.Normal); Text = p.Title or "Notification"; TextColor3 = th.Text or RGB(255, 255, 255); TextSize = 13; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; TextTruncate = ETT.AtEnd; ZIndex = 4 })
 	if body then
-		Add("TextLabel", { Parent = card; BackgroundTransparency = 1; Position = UFO(tx, 25); Size = UD2(1, tw, 0, 13); FontFace = FN("rbxassetid://12187365364", FW.Medium, FS.Normal); Text = msg; TextColor3 = th.TextDim or RGB(170, 158, 160); TextSize = 10; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; TextTruncate = ETT.AtEnd; ZIndex = 4 })
+		Add("TextLabel", { Parent = card; BackgroundTransparency = 1; Position = UFO(tx, 25); Size = UD2(1, tw, 0, 13); FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.Medium, FS.Normal); Text = msg; TextColor3 = th.TextDim or RGB(170, 158, 160); TextSize = 11; TextXAlignment = TXA.Left; TextYAlignment = TYA.Center; TextTruncate = ETT.AtEnd; ZIndex = 4 })
 	end
 	local x = Add("TextButton", { Parent = card; AnchorPoint = V2(1, 0); Position = UD2(1, -7, 0, 6); Size = UFO(16, 16); BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = 1; BorderSizePixel = 0; AutoButtonColor = false; Text = ""; ZIndex = 6 })
 	Add("UICorner", { Parent = x; CornerRadius = UD(0, 5); })
@@ -3365,11 +3365,11 @@ Library.BuildConfigPage = function(self: Library, Window: any)
 		table.clear(ListRows)
 		local Names = Library.ListConfigs()
 		if #Names == 0 then
-			local Empty = Add("TextLabel", { Parent = ListScroll; BackgroundTransparency = 1; Size = UD2(1, 0, 0, 28); FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Text = "No configs yet"; TextColor3 = RGB(132, 112, 114); TextSize = 12 })
+			local Empty = Add("TextLabel", { Parent = ListScroll; BackgroundTransparency = 1; Size = UD2(1, 0, 0, 28); FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Text = "No configs yet"; TextColor3 = RGB(132, 112, 114); TextSize = 13 })
 			ListRows["__empty"] = Empty :: any
 		else
 			for i, Name in Names do
-				local Row = Add("TextButton", { Parent = ListScroll; AutoButtonColor = false; BackgroundColor3 = Library.Theme.Accent; BackgroundTransparency = 1; BorderSizePixel = 0; Size = UD2(1, 0, 0, 26); FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Text = "  " .. Name; TextColor3 = RGB(210, 190, 192); TextSize = 13; TextXAlignment = TXA.Left; LayoutOrder = i })
+				local Row = Add("TextButton", { Parent = ListScroll; AutoButtonColor = false; BackgroundColor3 = Library.Theme.Accent; BackgroundTransparency = 1; BorderSizePixel = 0; Size = UD2(1, 0, 0, 26); FontFace = FN("rbxasset://fonts/families/Montserrat.json", FW.SemiBold, FS.Normal); Text = "  " .. Name; TextColor3 = RGB(210, 190, 192); TextSize = 15; TextXAlignment = TXA.Left; LayoutOrder = i })
 				Add("UICorner", { Parent = Row; CornerRadius = UD(0, 4); })
 				Row.Activated:Connect(function()
 					SelectConfig(Name)
