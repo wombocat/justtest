@@ -3080,7 +3080,7 @@ Library.Sounds = {
 	Dropdown = 112641976046864;
 	Toggle = 73629124033518;
 }
-Library.SoundVolume = 0.5
+Library.SoundVolume = 2.5
 Library.SoundsEnabled = true
 Library._Sfx = {}
 local function Sfx(Name: string): Sound?
@@ -3101,6 +3101,7 @@ Library.PlaySound = function(Name: string)
 	local Sl = Sfx(Name)
 	if not Sl then return end
 	pcall(function()
+		Sl.Volume = Library.SoundVolume
 		Sl.TimePosition = 0
 		Sl:Play()
 	end)
