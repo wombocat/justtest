@@ -1273,6 +1273,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 		end
 
 		if State then
+			Library.PlaySound("Dropdown")
 			ClaimPopup(Dropdown)
 
 			OptionList.Size = UFO(InputFrame.AbsoluteSize.X, 0)
@@ -1501,6 +1502,7 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 
 		local ntf = Toggle.Notify
 		if ntf == nil then ntf = Library.NotifyToggles end
+		if not Silent then Library.PlaySound("Toggle") end
 
 		if not Silent and ntf and Library.Notify then
 			local Label = self.Text or Toggle.Flag or "Toggle"
@@ -1509,6 +1511,7 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 				Text = state and "Enabled" or "Disabled";
 				Type = state and "Success" or "Info";
 				Duration = 1.6;
+				Sound = false;
 			})
 		end
 
@@ -2330,7 +2333,10 @@ Library.Window = function(self: Library, propertyTable: {})
 				Tween(SubPageLabel, { TextTransparency = 0.5 }, 0.15)
 			end)
 
-			SubPageButton.Activated:Connect(SubPage.Open)
+			SubPageButton.Activated:Connect(function()
+				Library.PlaySound("Tab")
+				SubPage.Open()
+			end)
 
 			if #Page.SubPages == 1 then
 				Page.ActiveSubPage = SubPage
@@ -2345,7 +2351,10 @@ Library.Window = function(self: Library, propertyTable: {})
 			return SubPage
 		end
 
-		PageButton.Activated:Connect(Page.Open)
+		PageButton.Activated:Connect(function()
+			Library.PlaySound("Tab")
+			Page.Open()
+		end)
 
 		if #Window.Pages == 1 then
 			Page.Open()
@@ -2356,6 +2365,7 @@ Library.Window = function(self: Library, propertyTable: {})
 		return Page
 	end
 
+	Library.PlaySound("Menu")
 	return Window
 end
 
@@ -3049,10 +3059,46 @@ end
 
 Library._NotifyOrder = 0
 Library._Toasts = {}
+Library.Sounds = {
+	Menu = 117037840785385;
+	Tab = 111764646352235;
+	Notify = 118800406096048;
+	Dropdown = 112641976046864;
+	Toggle = 73629124033518;
+}
+Library.SoundVolume = 0.5
+Library.SoundsEnabled = true
+Library._Sfx = {}
+local function Sfx(Name: string): Sound?
+	local Id = Library.Sounds[Name]
+	if not Id or Id == 0 then return nil end
+	local Sl = Library._Sfx[Name]
+	if not Sl then
+		Sl = Instance.new("Sound")
+		Sl.SoundId = "rbxassetid://" .. tostring(Id)
+		Sl.Volume = Library.SoundVolume
+		Sl.Parent = Services:GetService("SoundService")
+		Library._Sfx[Name] = Sl
+	end
+	return Sl
+end
+Library.PlaySound = function(Name: string)
+	if not Library.SoundsEnabled then return end
+	local Sl = Sfx(Name)
+	if not Sl then return end
+	pcall(function()
+		Sl.TimePosition = 0
+		Sl:Play()
+	end)
+end
+task.spawn(function()
+	for Name in Library.Sounds do Sfx(Name) end
+end)
 Library.MaxNotifications = 4
 Library.NotifyToggles = false
 
 Library.Notify = function(propertyTable: {})
+	if (propertyTable or {}).Sound ~= false then Library.PlaySound("Notify") end
 	local p = Overwrite({ Title = "Notification"; Text = ""; Content = nil; Duration = 4; Type = "Info"; Icon = nil }, propertyTable or {})
 	local msg = p.Content or p.Text or p.Message or ""
 	local dur = p.Duration or 4
@@ -3185,6 +3231,7 @@ Library.ToggleMenu = function(State: boolean?)
 	if State == nil then
 		State = not Library.MenuOpen
 	end
+	if State and not Library.MenuOpen then Library.PlaySound("Menu") end
 	Library.MenuOpen = State
 	for _, Win in Library.Windows do
 		if Win.Canvas then
